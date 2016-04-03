@@ -1,0 +1,79 @@
+
+
+#macro(pager,$pageNo,$totalPage,$url,$param)
+
+#if($totalPage>1)
+
+#set($paramName="?pageNo")
+
+#if($param)
+#set($paramName="&pageNo")
+#end
+
+#set($num1 = $pageNo - 5)
+
+#if($num1>1)
+#set($start=$num1)
+#else
+#set($start=1)
+#end
+
+#set($num2 = $start + 9)
+
+#if($num2<$totalPage)
+#set($end=$num2)
+#else
+#set($end=$totalPage)
+#end
+
+#set($num3 = $end - 9)
+#if($num3>1)
+#set($start=$num3)
+#end
+
+<div class="pagination-wrapper">
+    <ul class="pagination">
+#set($pageArr = [$start..$end])
+        #if($pageNo > 1)
+            #if($pageNo!=1)
+                #set($prepage = $pageNo - 1)
+                <li><a class="page-pre" href="${url}${paramName}=$prepage" title="上一页">«</a></li>
+            #end
+        #end
+        
+        #if($start>1)
+              <li><a href="${url}${paramName}=1">1</a></li>
+           #if($start>2)
+              <li><span>...</span></li>
+           #end
+        #end
+        
+        #foreach ($page in $pageArr)
+               #if(${page}==$pageNo)
+                  #if(${page}!=1 || $totalPage!=1)
+                     <li class="active"><a href="javascript:;">$page<span class="sr-only"></span></a></li>
+                  #end
+               #else
+                 <li><a href="${url}${paramName}=$page">$page</a></li>
+               #end           
+        #end
+        
+        #if($end < $totalPage)
+           #if($end < $totalPage - 1)
+              <li><span>...</span></li>
+           #end
+           <li><a href="${url}${paramName}=$totalPage">$totalPage</a></li>
+        #end
+        
+        #if($totalPage>1 && $pageNo!=$totalPage)
+           #set($next=${pageNo}+1)
+           <li><a href="${url}${paramName}=$next" class="page-next" title="下一页">»</a></li>
+        #end
+         </ul>    
+    </div>
+#end
+
+#end
+
+ 
+        

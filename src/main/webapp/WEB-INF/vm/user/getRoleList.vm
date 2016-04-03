@@ -1,0 +1,298 @@
+#set($menu = 10)
+#parse("/include/global_header.vm")
+<div class="page-title">
+    <div class="left">
+        <form id="queryform" action="/roleStastic/getroleRealReportList.do" method="post" name="queryform">
+            <table>
+                <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#add_role">新增角色</button>
+            </table>
+        </form>
+    </div>
+</div>
+<div class="page-main">
+    <div class="list-table">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <th>序号</th>
+                <th>角色名</th>
+                <th>描述</th>
+                <th>权限</th>
+                <th>当前状态</th>
+                <th>操作</th>
+            </tr>
+            #foreach($item in $listRole)
+                <tr #if($velocityCount % 2 == 0)class="active"#end>
+                    <td></td>
+                    <td>$!{item.role}</td>
+                    <td>$!{item.description}</td>
+                    <td>$!{item.permissions}</td>
+                    <td>$!{item.available}</td>
+                    <td>
+                        <!--<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#edit_role">编辑</button>-->
+                        <button class="btn btn-primary btn-lg" type="button" id="edit_role_btn"
+                                onclick='editRole("$item.role","$item.description","$item.permissions");'>编辑
+                        </button>
+                    </td>
+                </tr>
+            #end
+        </table>
+    </div>
+</div>
+
+##parse("common/page.vm")
+##set($url="getUserAuthList.do?roleName=$!roleName&settlementPattern=$!settlementPattern&source=$!source")
+##pager($pageData.pageInfo.pageNo,$pageData.pageInfo.pageCount,"$url",true)
+
+<!-- 角色编辑弹出框 -->
+<div class="modal fade" id="edit_role" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="edit_role_Label">
+                    角色编辑
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">角色名称</label>
+
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="edit_role_name">***</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="col-sm-2 control-label">描述</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit_role_desc"
+                                   placeholder="描述">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="col-sm-2 control-label">拥有权限</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit_role_permission"
+                                   placeholder="权限">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary">
+                    提交更改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 新增角色弹出框 -->
+<div class="modal fade" id="add_role" tabindex="-1" role="dialog"
+     aria-labelledby="add_role_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="add_role_label">
+                    角色新增
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="lastname" class="col-sm-2 control-label">角色名称</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="add_role_name"
+                                   placeholder="角色名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="col-sm-2 control-label">描述</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="add_role_desc"
+                                   placeholder="描述">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="col-sm-2 control-label">拥有权限</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="add_role_permissions"
+                                   placeholder="拥有权限">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">状态</label>
+
+                        <div class="col-sm-10">
+                            <select class="form-control" id="add_role_status">
+                                <option>1</option>
+                                <option>0</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">tree</label>
+                        <div class="col-sm-10">
+                            <div id="treeview-checkable" class=""></div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" onclick='addRole();'>
+                    确认
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        //$('table tr:not(:first)').remove();
+        var len = $('table tr').length;
+        console.log(len)
+        for (var i = 1; i < len; i++) {
+            $('table tr:eq(' + i + ') td:first').text(i);
+        }
+
+//        $("#edit_role_btn").click(function(){
+//            console.log("edit_role_btn")
+//            $("#edit_role").modal("toggle");
+//        });
+
+        $('#treeview-checkable').treeview({
+            data: getTree(),
+            showIcon: true,
+            showCheckbox: true,
+            multiSelect:true,
+            color: "#428bca",
+            //expandIcon: "glyphicon glyphicon-stop",
+            //collapseIcon: "glyphicon glyphicon-unchecked",
+            //nodeIcon: "glyphicon glyphicon-user",
+            showTags: true,
+            onNodeChecked: function(event, node) {
+                console.log(node.text)
+                //$('#checkable-output').prepend('<p>' + node.text + ' was checked</p>');
+            },
+            onNodeUnchecked: function (event, node) {
+                console.log(node.text)
+                //$('#checkable-output').prepend('<p>' + node.text + ' was unchecked</p>');
+            }
+        });
+
+    });
+    function getTree() {
+        var data = [
+            {
+                text: "Parent 1",
+                nodes: [
+                    {
+                        text: "Child 1",
+                        nodes: [
+                            {
+                                text: "Grandchild 1"
+                            },
+                            {
+                                text: "Grandchild 2"
+                            }
+                        ]
+                    },
+                    {
+                        text: "Child 2"
+                    }
+                ]
+            },
+            {
+                text: "Parent 2"
+            },
+            {
+                text: "Parent 3"
+            },
+            {
+                text: "Parent 4"
+            },
+            {
+                text: "Parent 5"
+            }
+        ];
+        // Some logic to retrieve, or generate tree structure
+        return data;
+    }
+    function openpage() {
+        window.location.replace("/user/getRoleList");
+    }
+
+    function queryData() {
+        document.queryform.submit();
+    }
+
+    function addRole() {
+        var role = $("#add_role_name").val();
+        var desc = $("#add_role_desc").val();
+        var permissions = $("#add_role_permissions").val();
+        var status = $("#add_role_status").val();
+
+        $.ajax({
+            url: '/user/addRole.do',// 跳转到 action
+            data: {
+                role: role,
+                description: desc,
+                permissions: permissions,
+                status: status
+            },
+            type: 'post',
+            cache: false,
+            //dataType: 'json',
+            success: function (data) {
+                console.log(data)
+                if (data.msg == "true") {
+                    // view("修改成功！");
+                    $("#add_role").modal("hide");
+                    alert("角色添加成功！");
+                    window.location.reload();
+                } else {
+                    alert(data.msg);
+                }
+            },
+            error: function () {
+                // view("异常！");
+                alert("error！");
+            }
+        });
+
+    }
+
+    //角色编辑
+    function editRole(name, desc, permission) {
+        console.log(name)
+        $("#edit_role").modal("toggle");
+        $("#edit_role_name").html(name);
+        $("#edit_role_permission").val(permission);
+        $("#edit_role_desc").val(desc);
+
+    }
+
+</script>
+#parse("/include/global_footer.vm")

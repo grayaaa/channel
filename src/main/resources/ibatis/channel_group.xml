@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="group">
+	<resultMap id="channelMap" type="com.netease.channel.entity.ChannelGroup">
+		<result column="gid" property="gid"/>
+		<result column="gname" property="gname"/>
+		<result column="ctime" property="ctime"/>
+		<result column="ltime" property="ltime"/>
+		<result column="type" property="type"/>
+		<result column="isactive" property="isactive"/>
+	</resultMap>
+	
+	<!-- 返回下一个可用ID-->
+	<select id="getNextId" resultType="int" parameterType="map">
+		select AUTO_INCREMENT from INFORMATION_SCHEMA.TABLES where TABLE_NAME=#{tableName}  
+	</select>
+	
+	<select id="getGroupById" resultMap="channelMap" parameterType="map">
+		select * from channel_group where id=#{groupId}
+	</select>
+	
+	<!-- 返回最大ID-->
+	<select id="getMaxId" resultType="int">
+		select max(gid) from channel_group
+	</select>
+	
+
+</mapper>

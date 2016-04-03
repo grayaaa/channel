@@ -1,0 +1,90 @@
+#set($menu = 1)
+#parse("/include/global_header.vm")
+<div class="page-title">
+    <div class="left">
+    <form id="queryform" action="/channelStastic/list.do" method="post" name="queryform">
+		   <table>
+			   	日期：<input type="text" class="form-control" value="$!pageDate" name="pageDate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" size="20">
+					<button type="button" class="btn btn-primary" onclick="javascript:queryData()">查询</button>
+		   </table>
+	</form>
+    </div>
+</div>
+<div class="page-main">
+    <div class="list-table">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+             <tr>
+                <p style="font-size:20px;font-weight: bold;">累积趋势:注册数量</p>
+             </tr>
+             <tr>
+                <th>来源</th>
+                #foreach($item1 in $dateList)
+                <th>$!{viewHelper.getDate($item1, "yyyy/MM/dd")}</th>
+                #end
+            </tr>
+            <tr #if($velocityCount % 2 == 0)class="active"#end>
+                <td>外部渠道</td>
+                #foreach($itemExternal in $pageDataExternal.dataList)
+                <td>$!{itemExternal.statistisIndicater}</td>
+                #end
+            </tr>
+            <tr #if($velocityCount % 2 == 0)class="active"#end>
+                <td>内部渠道</td>
+                #foreach($itemInner in $pageDataInner.dataList)
+                <td>$!{itemInner.statistisIndicater}</td>
+                #end
+            </tr>
+            <tr #if($velocityCount % 2 == 0)class="active"#end>
+                <td>无渠道</td>
+                #foreach($itemNull in $pageDataNull.dataList)
+                <td>$!{itemNull.statistisIndicater}</td>
+                #end
+            </tr>
+        </table>
+        </div>
+        <div class="list-table">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <p style="font-size:20px;font-weight: bold;">数据详情</p>
+            </tr>
+            <tr>
+                <th>日期</th>
+                <th>来源</th>
+                <th>注册用户总数</th>
+                <th>充值用户总数</th>
+                <th>充值金额总数</th>
+                <th>注册ARPU</th>
+                <th>充值ARPU</th>
+            </tr>
+            #foreach($item in $pageData.dataList)
+                <tr #if($velocityCount % 2 == 0)class="active"#end>
+                    <td>$!{viewHelper.getDate($item.statisticDate, "yyyy/MM/dd")}</td>
+                    <td>#if($!{item.source}=="External")
+                                                                                                                   外部渠道
+                        #elseif($!{item.source}=="Inner")
+                                                                                                                    内部渠道   
+                        #else 
+                                                                                                                       无渠道
+                        #end                                                                                                                                                                                                                                                                 
+                    </td>
+                    <td>$!{item.registerSumNumber}</td>
+                    <td>$!{item.rechargeSumNumber}</td>
+                    <td>$!{item.rechargeSumMoney}</td>
+                    <td>$!{item.registerARPU}</td>
+                    <td>$!{item.rechargeARPU}</td>
+                </tr>
+            #end
+        </table>
+    </div>
+</div>
+
+#parse("common/page.vm")
+#set($url="list.do?pageDate=$!pageDate")
+#pager($pageData.pageInfo.pageNo,$pageData.pageInfo.pageCount,"$url",true)
+
+<script type="text/javascript">
+    function queryData(){
+		document.queryform.submit();
+	};
+</script>
+#parse("/include/global_footer.vm")

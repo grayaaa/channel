@@ -1,0 +1,5 @@
+#if($errorMsg)
+    $errorMsg
+#else
+error
+#end

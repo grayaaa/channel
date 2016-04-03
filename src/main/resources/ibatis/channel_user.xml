@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+	<resultMap id="userMap" type="com.netease.channel.entity.User">
+		<result column="uid" property="userId"/>
+		<result column="email" property="email"/>
+		<result column="name" property="name"/>
+		<result column="roles" property="roles"/>
+		<result column="cname" property="cname"/>
+		<result column="ctime" property="ctime"/>
+		<result column="ltime" property="ltime"/>
+	</resultMap>
+    <resultMap id="roleMap" type="com.netease.channel.entity.Role">
+        <result column="rid" property="rid"/>
+        <result column="role" property="role"/>
+        <result column="description" property="description"/>
+        <result column="permissions" property="permissions"/>
+        <result column="available" property="available"/>
+    </resultMap>
+	
+	<!-- 返回下一个可用ID-->
+	<select id="getNextId" resultType="int" parameterType="map">
+		select AUTO_INCREMENT from INFORMATION_SCHEMA.TABLES where TABLE_NAME=#{tableName}  
+	</select>
+
+    <select id="getUserList" resultMap="userMap" parameterType="map">
+        select * from channel_user ORDER BY uid ASC
+    </select>
+	
+	<select id="getUserByEmail" resultMap="userMap" parameterType="map">
+		select * from channel_user where email=#{email}
+	</select>
+
+    <insert id="addUser" parameterType="com.netease.channel.entity.User">
+        insert into channel_user(email,name,roles,cname,ctime,ltime) values(#{email},#{name},#{roles},#{cname},#{ctime},#{ltime})
+    </insert>
+
+    <select id="getRoleList" resultMap="roleMap" parameterType="map">
+        select * from channel_role ORDER BY rid ASC
+    </select>
+
+    <select id="getRoleByName" resultMap="roleMap" parameterType="map">
+        select * from channel_role where role=#{role}
+    </select>
+
+    <insert id="addRole" parameterType="com.netease.channel.entity.Role">
+        insert into channel_role(role,description,permissions,available) values(#{role},#{description},#{permissions},#{available})
+    </insert>
+	
+	<!-- 返回最大ID-->
+	<select id="getMaxId" resultType="int">
+		select max(gid) from channel_user
+	</select>
+	
+
+</mapper>

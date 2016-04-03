@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toolbox>
+
+    <tool>
+        <key>viewHelper</key>
+        <scope>application</scope>
+        <class>com.netease.channel.util.VelocityUtil</class>
+    </tool>
+    
+    <tool>
+    	<key>authHelper</key>
+    	<scope>application</scope>
+    	<class>com.netease.channel.util.AuthHelper</class>
+    </tool>
+   
+    <tool>
+        <key>stringUtils</key>
+        <scope>application</scope>
+        <class>org.apache.commons.lang.StringUtils</class>
+    </tool>
+    <tool>
+		<key>dt</key>
+		<scope>application</scope>
+		<class>org.apache.velocity.tools.generic.DateTool</class>
+  	</tool>
+    <tool>
+		<key>mt</key>
+		<scope>application</scope>
+		<class>org.apache.velocity.tools.generic.MathTool</class>
+  	</tool>
+    
+</toolbox>

@@ -1,0 +1,65 @@
+<script>
+    var action;
+    var dialog = $("#dialog");
+    var form = $('#dialogForm');
+
+    function edit(data) {
+        form.find('[name]').each(function() {
+            var v = data[this.name];
+            if (typeof v !== 'undefinded') {
+                this.value = v;
+            }
+        });
+
+        action = "edit";
+        dialog.dialog("option", "title", "修改");
+        dialog.dialog("open");
+    }
+
+    function add() {
+        action = "add";
+        form[0].reset();
+        dialog.dialog("option", "title", "添加");
+        dialog.dialog("open");
+    }
+
+    $(function() {
+        if (typeof dialog_height === 'undefined') {
+            dialog_height = 410;
+        }
+        if (typeof dialog_width === 'undefined') {
+            dialog_width = 500;
+        }
+
+        dialog.dialog({
+            autoOpen: false,
+            height: dialog_height,
+            width: dialog_width,
+            modal: true,
+            buttons: {
+                "提交": function() {
+                    jQuery.ajax({
+                        url: action,
+                        type: "POST",
+                        data: form.serialize(),
+                        dataType: 'json',
+                        timeout: 5000,
+                        error: function() {
+                            alert("抱歉，服务器出现错误，请重试！");
+                        },
+                        success: function(data) {
+                            if (data && data.status == 0) {
+                                window.location.reload();
+                            } else {
+                                alert(data.msg);
+                            }
+                        }
+                    });
+                },
+                "取消": function() {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    });
+</script>

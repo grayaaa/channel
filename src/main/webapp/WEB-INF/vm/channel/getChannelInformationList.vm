@@ -1,0 +1,93 @@
+#set($menu = 6)
+#parse("/include/global_header.vm")
+<div class="page-title">
+    <div class="left">
+      <form id="queryform" action="/channelStastic/getChannelInformationList.do" method="post" name="queryform">
+		   <table>
+		                            渠道ID：<input type="text" class="form-control" value="$!channelName" name="channelName" size="20">
+			   	结算方式：
+			   	    <select id="content" name="settlementPattern" >
+			   	    <option selected = "selected" value="" #if($!settlementPattern =="")selected="selected"#end>不限</option>
+					<option value="CPA" #if($!settlementPattern =="CPA")selected="selected"#end>CPA</option>
+					<option value="CPT" #if($!settlementPattern =="CPT")selected="selected"#end>CPT</option>
+					<option value="CPS" #if($!settlementPattern =="CPS")selected="selected"#end>CPS</option>
+					<option value="CPM" #if($!settlementPattern =="CPM")selected="selected"#end>CPM</option>
+					</select>
+			   	渠道来源：
+			   	    <select id="content" name="source" >
+			   	    <option selected = "selected" value="" #if($!source =="")selected="selected"#end>不限</option>
+					<option value="null" #if($!source =="null")selected="selected"#end>无渠道</option>
+					<option value="inner" #if($!source =="inner")selected="selected"#end>内部渠道</option>
+					<option value="external" #if($!source =="external")selected="selected"#end>外部渠道</option>
+					</select>
+					<button type="button" class="btn btn-primary" onclick="javascript:queryData()">查询</button>
+		   </table>
+	   </form>
+    </div>
+    <div class="right">
+          日期：<input type="text" class="form-control" value="$!pageDate" id="pageDate" name="pageDate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" size="20">
+          <button type="button" class="btn btn-primary" onclick="javascript:setDiscount()">确认折扣率</button>
+    </div>
+</div>
+<div class="page-main">
+    <div class="list-table" style="width:1700px; overflow:scroll;">
+        <table width="1730px" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <th>渠道名称</th>
+                <th>结算模式</th>
+                <th>结算指标</th>
+                <th>状态</th>
+                <th>上线时长</th>
+                <th>上线日期</th>
+                <th>下线日期</th>
+                <th>折扣率</th>
+                <th>最后编辑时间</th>
+                <th>人工评级</th>
+                <th>操作</th>
+            </tr>
+            #foreach($item in $pageData.dataList)
+                <tr #if($velocityCount % 2 == 0)class="active"#end>
+                    <td>$!{item.channelName}</td>
+                    <td>$!{item.settlementPattern}</td>
+                    <td>$!{item.settlementIndicator}</td>
+                    <td>$!{item.status}</td>
+                    <td>$!{item.onlineTime}</td>
+                    <td>$!{viewHelper.getDate($item.onlineDate, "yyyy/MM/dd")}</td>
+                    <td>$!{viewHelper.getDate($item.offlineDate, "yyyy/MM/dd")}</td>
+                    <td>$!{item.discount}</td>
+                    <td>$!{viewHelper.getDate($item.lastUpdateTime, "yyyy/MM/dd")}</td>
+                    <td>$!{item.artificialRating}星</td>
+                    <td class="i-operate">
+                        <a href="edit?channelName=${item.channelName}">修改</a>
+                        <a href="deleteChannelByName.do?channelName=${item.channelName}" onclick="return confirm('确定要删除吗？')">删除</a>
+                    </td>
+                </tr>
+            #end
+        </table>
+    </div>
+</div>
+#parse("common/page.vm")
+#set($url="getChannelInformationList.do?channelName=$!channelName&settlementPattern=$!settlementPattern&source=$!source")
+#pager($pageData.pageInfo.pageNo,$pageData.pageInfo.pageCount,"$url",true)
+
+<script type="text/javascript">
+    function queryData(){
+		document.queryform.submit();
+	};
+	
+	function setDiscount(){
+jQuery.ajax({
+	                type:'post',
+            		url: '/channelStastic/setDiscount',
+                    data: {pageDate:$("#pageDate").val()},
+            		success: function(){
+            		alert("设置成功!");
+                    window.location.reload();
+            		}
+	     });
+	}
+
+
+</script>
+#parse("/include/global_dialog.vm")
+#parse("/include/global_footer.vm")

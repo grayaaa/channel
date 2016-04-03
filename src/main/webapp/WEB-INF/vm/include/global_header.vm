@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>渠道评估管理系统</title>
+    <meta http-equiv="content-Type" content="text/html;charset=utf-8"/>
+    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/daterangepicker.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+
+    <script src="/js/moment.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap-treeview.js"></script>
+    <script src="/js/daterangepicker.js"></script>
+
+    <!--
+    <link href="/css/smoothness/jquery-ui.min.css" rel="stylesheet">
+    <script src="/js/jquery-ui.min.js"></script>
+    <script src="/js/My97DatePicker/WdatePicker.js"></script>
+    -->
+
+</head>
+<body>
+<div class="layout_header">
+    <div class="header">
+        <div class="h_logo"> 渠道数据管理平台
+            <!--
+           <div class="h_logout">
+                 <a href="http://reg.163.com/Logout.jsp?url=http://channel.bobo.163.com/logout" class="btn btn-primary">退出账号</a>
+           </div>
+           -->
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+<div class="layout_leftnav">
+    <div class="inner">
+        <div class="nav-vertical">
+            <ul class="accordion">
+                <li id="one">
+                    <a href="#one">渠道数据报表<span></span></a>
+                    <ul class="sub-menu" style="display: block">
+                        <li><a href="/channelStastic/list.do" #if($menu == 1)class="active"#end>dashboard</a></li>
+                        <li><a href="/channel/getChannelDetail.do" #if($menu == 2)class="active"#end>渠道组数据监控</a></li>
+                    </ul>
+                    <a href="#two">渠道财务报表<span></span></a>
+                    <ul class="sub-menu" style="display: block">
+                        <li><a href="/channelStastic/getChannelRealReportList.do" #if($menu == 4)class="active"#end>渠道结算报表</a>
+                        </li>
+                        <li><a href="/channelStastic/getChannelCooperationSettlementList.do"
+                               #if($menu == 5)class="active"#end>*****</a></li>
+                        <li><a href="/channelStastic/getChannelInformationList.do" #if($menu == 6)class="active"#end>*****</a>
+                        </li>
+                    </ul>
+                    <a href="#three">渠道管理<span></span></a>
+                    <ul class="sub-menu" style="display: block">
+                        <li><a href="/manage/getChannels.do" #if($menu == 7)class="active"#end>渠道列表</a></li>
+                        <li><a href="/manage/getGroups.do" #if($menu == 8)class="active"#end>渠道分组</a></li>
+                    </ul>
+                    #if($authHelper.isPermitted("admin:*"))
+                        <a href="#four">系统管理<span></span></a>
+                        <ul class="sub-menu" style="display: block">
+                            <li><a href="/user/getUserList.do" #if($menu == 9)class="active"#end>用户管理</a></li>
+                            <li><a href="/user/getRoleList.do" #if($menu == 10)class="active"#end>角色管理</a></li>
+                        </ul>
+                    #end
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="layout_rightmain">
+    <div class="inner">

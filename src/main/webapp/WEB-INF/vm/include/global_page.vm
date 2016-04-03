@@ -1,0 +1,37 @@
+<div class="list-page">
+    <div class="i-total">共 $!{totalSize} 条，第 $!{pageNo} 页/共 $!{pageCount} 页</div>
+    <div class="i-list">
+        #if($pageNo != 1 && $pageCount > 0)
+            <a href="$!{pageHref}page=1">首页</a>
+        #end
+        #if($pageNo > 1 && $pageCount > 0)
+            <a href="$!{pageHref}page=$prevPage">上页</a>
+        #end
+
+        #if($pageCount > 0)
+            #if($pageBegin > 1)
+                ......
+            #end
+            #foreach($i in [1..$pageCount])
+                #if($i >= $pageBegin && $i <= $pageEnd)
+                    #if($i == $pageNo)
+                        <span class="active">$i</span>
+                    #else
+                        <a href="$!{pageHref}page=$i">$i</a>
+                    #end
+                #end
+            #end
+            #if($pageEnd < $pageCount)
+                ......
+            #end
+        #end
+
+        #if($pageNo < $pageCount && $pageCount > 0)
+            <a href="$!{pageHref}page=$nextPage">下页</a>
+        #end
+        #if($pageNo != $pageCount && $pageCount > 0)
+            <a href="$!{pageHref}page=$pageCount">末页</a>
+        #end
+    </div>
+    <div class="clear"></div>
+</div>

@@ -1,0 +1,22 @@
+#set($menu = 7)
+#parse("/include/global_header.vm")
+<div class="page-main">
+   <form id="queryform" action="/user/getUserAuthList.do" method="post">
+    <div class="user-edit">
+        <table border="0" cellspacing="0" cellpadding="0" align="center">
+            <tr>
+               <p>
+                                                                 添加用户名已存在，请重新选择其他通行证！
+		       </p> 
+            </tr>
+            <tr>
+            <p><input class="orange-btn" type="submit" value="确定" /></p>
+            </tr>
+        </table>
+    </div>
+   </form>
+</div>
+#parse("common/page.vm")
+#set($url="getChannelInformationList.do?channelName=$!channelName&settlementPattern=$!settlementPattern&source=$!source")
+#pager($pageData.pageInfo.pageNo,$pageData.pageInfo.pageCount,"$url",true)
+#parse("/include/global_footer.vm")

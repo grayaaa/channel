@@ -1,0 +1,85 @@
+#set($menu = 4)
+#parse("/include/global_header.vm")
+<div class="page-title" style="height: 78px;">
+    <div class="left">
+      <form id="queryform" action="/channelStastic/getChannelRealReportList.do" method="post" name="queryform">
+		   <table>
+		                            渠道名称：<input type="text" value="$!channelName" id="channelName" name="channelName" size="20">
+			   	结算方式：
+			   	    <select id="content" name="settlementPattern" >
+			   	    <option selected = "selected" value="" #if($!settlementPattern =="")selected="selected"#end>不限</option>
+					<option value="CPA" #if($!settlementPattern =="CPA")selected="selected"#end>CPA</option>
+					<option value="CPT" #if($!settlementPattern =="CPT")selected="selected"#end>CPT</option>
+					<option value="CPS" #if($!settlementPattern =="CPS")selected="selected"#end>CPS</option>
+					<option value="CPM" #if($!settlementPattern =="CPM")selected="selected"#end>CPM</option>
+					</select>
+			   	日期：<input type="text" value="$!pageStartDate" name="pageStartDate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" size="20">
+			   	至：<input type="text" value="$!pageEndDate" name="pageEndDate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" size="20">
+					<button type="button" class="btn btn-primary" onclick="javascript:queryData()">查询</button>
+           </table>
+	  </form>
+    </div>
+    <div class="left">
+      <form id="importform" action="/channelStastic/importData.do" method="post" name="importform"></form>
+          日期：<input type="text" value="$!pageStartDate" id="pageStartDate" name="pageStartDate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" size="20">
+          <button type="button" class="btn btn-primary" onclick="javascript:importData()">导入数据</button>
+    </div>
+</div>
+<div class="page-main">
+    <div class="list-table">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <th>日期</th>
+                <th>渠道名称</th>
+                <th>注册数量</th>
+                <th>昨日环比</th>
+                <th>次日留存</th>
+                <th>活跃用户数</th>
+                <th>活跃率</th>
+                <th>充值用户数</th>
+                <th>充值金额</th>
+                <th>充值趋势</th>
+                <th>注册ARPU</th>
+                <th>充值ARPU</th>
+                <th>结算指标</th>
+                <th>结算数量</th>
+                <th>人工评级</th>
+            </tr>
+            #foreach($item in $pageData.dataList)
+                <tr #if($velocityCount % 2 == 0)class="active"#end>
+                    <td>$!{viewHelper.getDate($item.statisticDate, "yyyy/MM/dd")}</td>
+                    <td>$!{item.channelName}</td>
+                    <td>$!{item.registerNumber}</td>
+                    <td>$!{item.yesterdayLinkRelative}</td>
+                    <td>$!{item.nextDayLeft}</td>
+                    <td>$!{item.activeNumber}</td>
+                    <td>$!{item.activeRate}</td>
+                    <td>$!{item.rechargeNumber}</td>
+                    <td>$!{item.rechargeMoney}</td>
+                    <td>$!{item.rechargeTrend}</td>
+                    <td>$!{item.registerARPU}</td>
+                    <td>$!{item.rechargeARPU}</td>
+                    <td>$!{item.settlementIndicator}</td>
+                    <td>$!{item.settlementNumber}</td>
+                    <td>$!{item.artificialRating}</td>
+                </tr>
+            #end
+        </table>
+    </div>
+</div>
+#parse("common/page.vm")
+#set($url="getChannelRealReportList.do?channelName=$!channelName&settlementPattern=$!settlementPattern&pageStartDate=$!pageStartDate&pageEndDate=$!pageEndDate")
+#pager($pageData.pageInfo.pageNo,$pageData.pageInfo.pageCount,"$url",true)
+
+<script type="text/javascript">
+    function queryData(){
+		document.queryform.submit();
+	};
+</script>
+<script type="text/javascript">
+    function importData(){
+		document.importform.submit();
+	};
+</script>
+
+#parse("/include/global_footer.vm")

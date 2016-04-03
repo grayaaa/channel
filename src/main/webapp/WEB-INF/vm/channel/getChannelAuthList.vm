@@ -1,0 +1,56 @@
+#set($menu = 8)
+#parse("/include/global_header.vm")
+<div class="page-title">
+    <div class="left">
+      <form id="queryform" action="/operation/getChannelListByAuth.do" method="post" name="queryform">
+		   <table>
+		                            渠道名称：<input type="text" class="form-control" value="$!channelName" id="channelName" name="channelName" size="20">
+			   	日期：<input type="text" class="form-control" value="$!pageStartDate" name="pageStartDate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" size="20">
+			   	至：<input type="text" class="form-control" value="$!pageEndDate" name="pageEndDate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" size="20">
+					<button type="button" class="btn btn-primary" onclick="javascript:queryData()">查询</button>
+		   </table>
+	  </form>
+    </div>
+</div>
+<div class="page-main">
+    <div class="list-table">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <p style="font-size:20px;font-weight: bold;">合作商名称:$!{parterName}</p>
+            </tr>
+            <tr>
+                <th>日期</th>
+                <th>渠道名称</th>
+                #foreach($elem in $settlementIndicatorArray)
+                <th>$!{elem}</th>
+                #end
+                ##<th>$!{settlementIndicator}</th>
+                <th>状态</th>
+            </tr>
+            #foreach($item in $pageData.dataList)
+                <tr #if($velocityCount % 2 == 0)class="active"#end>
+                    <td>$!{viewHelper.getDate($item.statisticDate, "yyyy/MM/dd")}</td>
+                    <td>$!{item.channelName}</td>
+                    #foreach($elem1 in $!{item.list})
+                    <td>$!{viewHelper.getFloatRound($elem1)}</td>
+                    #end
+                    ##<td>$!{item.indicatorData}</td>
+                    #if($!item.status =="0")
+                    <td>已上线</td>
+                    #else
+                    <td>下线</td>
+                    #end
+                </tr>
+            #end
+        </table>
+    </div>
+</div>
+#parse("common/page.vm")
+#set($url="getChannelListByAuth.do?channelName=$!channelName&settlementPattern=$!settlementPattern&pageStartDate=$!pageStartDate&pageEndDate=$!pageEndDate")
+#pager($pageData.pageInfo.pageNo,$pageData.pageInfo.pageCount,"$url",true)
+<script type="text/javascript">
+    function queryData(){
+		document.queryform.submit();
+	};
+</script>
+#parse("/include/global_footer.vm")

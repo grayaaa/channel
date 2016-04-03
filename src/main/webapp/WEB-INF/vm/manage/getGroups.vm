@@ -1,0 +1,208 @@
+#set($menu = 8)
+#parse("/include/global_header.vm")
+<div class="page-title">
+    <div class="left">
+      <form id="queryform" action="/channelStastic/getChannelRealReportList.do" method="post" name="queryform">
+		   <table>
+               渠道名称：<input type="text" value="$!channelName" id="channelName" name="channelName" size="20">
+
+               <button type="button" class="btn btn-primary" onclick="javascript:queryData()">查询</button>
+
+           </table>
+	  </form>
+    </div>
+    <div class="right">
+        <button type="button" class="btn btn-primary" onclick="javascript:analysis()">渠道费用录入</button>
+
+        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#add_channel">渠道新增</button>
+    </div>
+</div>
+<div class="page-main">
+    <div class="list-table">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <th>序号</th>
+                <th>渠道组名称</th>
+                <th>线上/线下</th>
+                <th>渠道分类</th>
+                <th>结算方式</th>
+                <th>备注</th>
+                <th>操作</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <!--<td><button type="button" class="btn btn-primary" onclick="javascript:edit()">编辑</button></td>-->
+                <td>
+                    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#edit_channel">编辑</button>
+                </td>
+            </tr>
+            #foreach($item in $pageData.dataList)
+                <tr #if($velocityCount % 2 == 0)class="active"#end>
+                    <td>$!{viewHelper.getDate($item.statisticDate, "yyyy/MM/dd")}</td>
+                    <td>$!{item.channelName}</td>
+                    <td>$!{item.registerNumber}</td>
+                    <td>$!{item.yesterdayLinkRelative}</td>
+                    <td>$!{item.nextDayLeft}</td>
+                    <td>$!{item.activeNumber}</td>
+                    <td><button type="button" class="btn btn-primary" onclick="javascript:analysis()">渠道类别管理</button></td>
+                </tr>
+            #end
+        </table>
+    </div>
+</div>
+#parse("common/page.vm")
+#set($url="getChannelRealReportList.do?channelName=$!channelName&settlementPattern=$!settlementPattern&pageStartDate=$!pageStartDate&pageEndDate=$!pageEndDate")
+#pager($pageData.pageInfo.pageNo,$pageData.pageInfo.pageCount,"$url",true)
+
+<script type="text/javascript">
+    function queryData(){
+		document.queryform.submit();
+	};
+</script>
+<script type="text/javascript">
+    function importData(){
+		document.importform.submit();
+	};
+</script>
+
+
+<!-- 渠道编辑弹出框 -->
+<div class="modal fade" id="edit_channel" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="edit_channel_Label">
+                    渠道编辑
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">渠道名称</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static">qq.com</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="col-sm-2 control-label">描述</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit_channel_name"
+                                   placeholder="描述">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="col-sm-2 control-label">渠道分组</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="edit_channel_group"
+                                   placeholder="渠道分组">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"> 请记住我
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">渠道类型</label>
+                        <div class="col-sm-10">
+                            <select class="form-control">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary">
+                    提交更改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+
+    <!-- 新增渠道弹出框 -->
+    <div class="modal fade" id="add_channel" tabindex="-1" role="dialog"
+         aria-labelledby="add_channel_label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"
+                            data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="add_channel_label">
+                        渠道新增
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-2 control-label">渠道名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="add_channel_name"
+                                       placeholder="渠道名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-2 control-label">描述</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="add_channel_desc"
+                                       placeholder="描述">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname" class="col-sm-2 control-label">渠道扣量</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="add_channel_group"
+                                       placeholder="渠道扣量">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">渠道类型</label>
+                            <div class="col-sm-10">
+                                <select class="form-control">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        确认
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+        </div>
+
+#parse("/include/global_footer.vm")

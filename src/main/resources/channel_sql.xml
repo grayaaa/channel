@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="channel">
+	<resultMap id="channelMap" type="com.netease.channel.entity.ChannelGroup">
+		<result column="id" property="id"/>
+		<result column="channel_name" property="channelName"/>
+		<result column="parter_name" property="parterName"/>
+		<result column="source" property="source"/>
+		<result column="status" property="status"/>
+		<result column="settlement_pattern" property="settlementPattern"/>
+		<result column="settlement_indicator" property="settlementIndicator"/>
+		<result column="discount" property="discount"/>
+		<result column="artificial_rating" property="artificialRating"/>
+		<result column="online_date" property="onlineDate"/>
+		<result column="offline_date" property="offlineDate"/>
+		<result column="online_time" property="onlineTime"/>
+		<result column="last_update_time" property="lastUpdateTime"/>
+	</resultMap>
+	
+	<!-- 返回下一个可用ID-->
+	<select id="getNextId" resultType="int" parameterType="map">
+		select AUTO_INCREMENT from INFORMATION_SCHEMA.TABLES where TABLE_NAME=#{tableName}  
+	</select>
+	
+	<select id="getChannelById" resultMap="channelMap" parameterType="map">
+		select * from channel_channel where id=#{channelId}  
+	</select>
+	
+	<!-- 返回最大ID-->
+	<select id="getMaxId" resultType="int">
+		select max(id) from channel_channel   
+	</select>
+	
+	<!-- 分页根据单一日期查询返回channelStatisticList -->
+	<select id="getChannelListByDate" resultType="com.netease.channel.entity.ChannelStatistic" parameterType="map">
+		select D.statistic_date as statisticDate,D.source,D.registerSumNumber,E.rechargeSumNumber,E.rechargeSumMoney,E.rechargeSumMoney/D.registerSumNumber as registerARPU,
+		E.rechargeSumMoney/E.rechargeSumNumber as rechargeARPU from (select sum(A.register_number) as registerSumNumber,A.statistic_date,B.source from channel_register A,
+		channel_channel B where A.channel_id = B.id and A.statistic_date=#{statisticDate} group by B.source) as D,(select sum(C.recharge_number) as rechargeSumNumber,
+		sum(C.recharge_money) as rechargeSumMoney,C.statistic_date,B.source from channel_channel B,channel_recharge C where B.id=C.channel_id and 
+		C.statistic_date=#{statisticDate} group by B.source) as E where D.source=E.source;
+	</select>
+	
+	<!-- 分页根据日期区间查询返回channelStatisticList -->
+	<select id="getChannelListBetweenDates" resultType="com.netease.channel.entity.ChannelStatistic" parameterType="map">
+		select D.statistic_date as statisticDate,D.source,D.registerSumNumber,E.rechargeSumNumber,E.rechargeSumMoney,E.rechargeSumMoney/D.registerSumNumber as registerARPU,
+		E.rechargeSumMoney/E.rechargeSumNumber as rechargeARPU from (select sum(A.register_number) as registerSumNumber,A.statistic_date,B.source from channel_register A,
+		channel_channel B where A.channel_id = B.id and A.statistic_date between #{startDate} and #{endDate} group by B.source,A.statistic_date) as D,(select sum(C.recharge_number) as rechargeSumNumber,
+		sum(C.recharge_money) as rechargeSumMoney,C.statistic_date,B.source from channel_channel B,channel_recharge C where B.id=C.channel_id and 
+		C.statistic_date between #{startDate} and #{endDate} group by B.source,C.statistic_date) as E where D.source=E.source and D.statistic_date=E.statistic_date order by statisticDate desc limit #{start},#{limit}
+	</select>
+	
+	<!-- 分页查询返回channelNextDayLeftList(次日留存日报) -->
+	<select id="getChannelNextDayLeftList" resultType="com.netease.channel.entity.ChannelNextDayLeft" parameterType="map">
+		select A.statistic_date as statisticDate,B.source as source,sum(A.register_number) as registerSumNumber,sum(A.next_day_left) as nextDayLeft from channel_register A,
+		channel_channel B where A.channel_id=B.id and A.statistic_date=#{statisticDate} group by B.source limit #{start},#{limit}
+	</select>
+	
+	<select id="getChannelCountBetweenDates" resultType="java.lang.Integer" parameterType="map">
+		select COUNT(0) from (select sum(A.register_number) as registerSumNumber,A.statistic_date,B.source from channel_register A,
+		channel_channel B where A.channel_id = B.id and A.statistic_date between #{startDate} and #{endDate} group by B.source,A.statistic_date) as D,(select sum(C.recharge_number) as rechargeSumNumber,
+		sum(C.recharge_money) as rechargeSumMoney,C.statistic_date,B.source from channel_channel B,channel_recharge C where B.id=C.channel_id and 
+		C.statistic_date between #{startDate} and #{endDate} group by B.source,C.statistic_date) as E where D.source=E.source and D.statistic_date=E.statistic_date 
+	</select>
+	
+	<!-- 分页返回多个查询条件查询渠道信息 -->
+	<select id="getChannelByQueryConditions" resultMap="channelMap" parameterType="map">
+		select * from channel_channel where 1=1
+		<if test="channelName != null" >
+		 	AND channel_name=#{channelName}
+		</if>
+		<if test="settlementPattern != null" >
+		 	AND settlement_pattern=#{settlementPattern}
+		</if>
+		<if test="source != null" >
+		 	AND source=#{source} 
+		</if>
+		order by id limit #{start},#{limit}
+	</select>
+	
+	<!-- 分页查询返回channelRealReportList -->
+	<select id="getChannelRealReportList" resultType="com.netease.channel.entity.ChannelRealReport" parameterType="map">
+		select  channel_register.statistic_date as statisticDate,channel_channel.channel_name as channelName,channel_register.register_number as registerNumber,
+        channel_register.yesterday_link_relative as yesterdayLinkRelative,channel_register.next_day_left as nextDayLeft,channel_active.active_number as activeNumber,
+        channel_active.active_rate as activeRate,channel_recharge.recharge_number as rechargeNumber,channel_recharge.recharge_money as rechargeMoney,channel_recharge.recharge_trend AS
+        rechargeTrend,channel_channel.settlement_indicator as settlementIndicator,channel_channel.artificial_rating as artificialRating from channel_channel 
+        left join channel_register on channel_channel.id = channel_register.channel_id
+        left join channel_active on channel_active.channel_id = channel_channel.id and channel_register.statistic_date = channel_active.statistic_date 
+        left join channel_recharge on channel_recharge.channel_id = channel_channel.id and channel_register.statistic_date=channel_recharge.statistic_date where 1=1   
+		<if test="channelName != null" >
+		 	AND channel_channel.channel_name=#{channelName} 
+		</if>
+		<if test="settlementPattern != null">
+		 	AND channel_channel.settlement_pattern=#{settlementPattern} 
+		</if>
+		<if test="startDate != null and endDate != null">
+		 	AND channel_register.statistic_date between #{startDate} and #{endDate} 
+		</if>
+		 order by statisticDate desc limit #{start},#{limit}
+	</select>
+	
+	<select id="getChannelRealReportCount" resultType="int" parameterType="map">
+		select COUNT(0) from channel_channel  
+        left join channel_register on channel_channel.id = channel_register.channel_id
+        left join channel_active on channel_active.channel_id = channel_channel.id and channel_register.statistic_date = channel_active.statistic_date 
+        left join channel_recharge on channel_recharge.channel_id = channel_channel.id and channel_register.statistic_date=channel_recharge.statistic_date where 1=1  
+		<if test="channelName != null" >
+		 	AND channel_channel.channel_name=#{channelName} 
+		</if>
+		<if test="settlementPattern != null" >
+		 	AND channel_channel.settlement_pattern=#{settlementPattern} 
+		</if>
+		<if test="startDate != null and endDate != null" >
+		 	AND channel_register.statistic_date between #{startDate} and #{endDate} 
+		</if>
+	</select>
+	
+	<!-- 分页查询返回channelCooperationSettlementList -->
+	<select id="getChannelCooperationSettlementList" resultType="com.netease.channel.entity.ChannelCooperationSettlement" parameterType="map">
+		select A.statistic_date as statisticDate,B.channel_name as channelName,B.parter_name as parterName,B.settlement_pattern as settlementPattern,
+		B.settlement_indicator as settlementIndicator,B.discount as discount,A.next_day_left as nextDayLeft from channel_register A left join channel_channel B  
+		on A.channel_id=B.id where 1=1   
+		<if test="channelName != null" >
+		 	AND B.channel_name=#{channelName} 
+		</if>
+		<if test="settlementPattern != null" >
+		 	AND B.settlement_pattern=#{settlementPattern} 
+		</if>
+		<if test="startDate != null and endDate != null" >
+		 	AND A.statistic_date between #{startDate} and #{endDate} 
+		</if>
+		 order by A.statistic_date desc limit #{start},#{limit}
+	</select>
+	
+	<select id="getChannelCooperationSettlementCount" resultType="int" parameterType="map">
+		select COUNT(0) from channel_register A left join channel_channel B on A.channel_id=B.id where 1=1   
+		<if test="channelName != null" >
+		 	AND B.channel_name=#{channelName} 
+		</if>
+		<if test="settlementPattern != null" >
+		 	AND B.settlement_pattern=#{settlementPattern} 
+		</if>
+		<if test="startDate != null and endDate != null" >
+		 	AND A.statistic_date between #{startDate} and #{endDate} 
+		</if>
+	</select>
+	
+	<select id="getSettlementValue" resultType="int" parameterType="map">
+		select ${columnName} from ${tableName} where channel_id=#{channelId} and statistic_date=#{statisticDate}
+	</select>
+	
+	<select id="getDiscount" resultType="float" parameterType="map">
+		select discount from ${tableName} where channel_id=#{channelId} and statistic_date=#{statisticDate}
+	</select>
+	
+	<select id="getChannelCountByQueryConditions" resultType="int" parameterType="map">
+		select COUNT(0) from channel_channel where 1=1 
+		<if test="channelName != null" >
+		 	AND channel_name=#{channelName}
+		</if>
+		<if test="settlementPattern != null" >
+		 	AND settlement_pattern=#{settlementPattern}
+		</if>
+		<if test="source != null" >
+		 	AND source=#{source} 
+		</if>
+	</select>
+	
+	<insert id="saveChannel" parameterType="com.netease.channel.entity.ChannelAnalysis">
+       INSERT INTO channel_channel (id,channel_name,parter_name,status,source,settlement_pattern,settlement_indicator,
+       discount,artificial_rating,online_date,offline_date,online_time,last_update_time) 
+        VALUES
+       (#{id},#{channelName},#{parterName},#{status},#{source},#{settlementPattern},#{settlementIndicator},#{discount},
+       #{artificialRating},#{onlineDate},#{offlineDate},#{onlineTime},#{lastUpdateTime})
+    </insert>
+    
+    <delete id="deleteChannelByName" parameterType="map">
+       delete from channel_channel where channel_name = #{channelName}
+    </delete>
+    
+    <delete id="deleteChannelById" parameterType="map">
+       delete from channel_channel where id = #{id}
+    </delete>
+    
+    <select id="getChannelByName" resultMap="channelMap" parameterType="map">
+		select * from channel_channel where channel_name=#{channelName}
+	</select>
+	
+	<update id="updateChannel" parameterType="com.netease.channel.entity.ChannelAnalysis">
+		update channel_channel set channel_name=#{channelName},parter_name=#{parterName},settlement_pattern=#{settlementPattern},settlement_indicator=#{settlementIndicator},
+		discount=#{discount},online_date=#{onlineDate},offline_date=#{offlineDate},artificial_rating=#{artificialRating},last_update_time=#{lastUpdateTime} 
+		where id = #{id}
+	</update>
+	
+	<select id="getChannelIdListByParterName" resultType="int" parameterType="map">
+		select id from channel_channel where parter_name=#{parterName}
+	</select>
+	
+	<select id="getChannelBasicList" resultType="com.netease.channel.entity.ChannelBasic" parameterType="map">
+		select 
+		channel_register.statistic_date as statisticDate,channel_channel.channel_name as channelName,channel_channel.settlement_indicator as settlementIndicator,
+        channel_channel.status as status from channel_channel 
+        left join channel_register on channel_channel.id = channel_register.channel_id where 1=1  
+        <if test="idList!=null">
+           AND channel_channel.id in
+        <foreach item="item" index="index" collection="idList" 
+                         open="(" separator="," close=")">
+                     #{item}
+        </foreach>
+        </if> 
+        <if test="channelName != null" >
+		 	AND channel_channel.channel_name=#{channelName}
+		</if>
+		<if test="startDate != null and endDate != null" >
+		 	AND channel_register.statistic_date between #{startDate} and #{endDate} 
+		</if>
+        ORDER BY statisticDate desc limit #{start},#{limit}
+	</select>
+	
+	<select id="getChannelBasicListCount" resultType="int" parameterType="map">
+		select 
+		COUNT(0) from channel_channel 
+        left join channel_register on channel_channel.id = channel_register.channel_id where 1=1  
+        <if test="idList!=null">
+              AND channel_channel.id in 
+        <foreach item="item" index="index" collection="idList" 
+                         open="(" separator="," close=")">
+                        #{item}
+        </foreach>
+        </if>
+        <if test="channelName != null" >
+		 	AND channel_channel.channel_name=#{channelName}
+		</if>
+		<if test="startDate != null and endDate != null" >
+		 	AND channel_register.statistic_date between #{startDate} and #{endDate} 
+		</if>
+	</select>
+	
+	<select id="listSumNullValueFromBegin" resultType="int" parameterType="map">
+		select sum(A.register_number) from channel_register A,
+		channel_channel B where A.channel_id = B.id and A.statistic_date&lt;#{startDate} and B.source='null'
+	</select>
+	
+	<select id="listSumInnerValueFromBegin" resultType="int" parameterType="map">
+		select sum(A.register_number) from channel_register A,
+		channel_channel B where A.channel_id = B.id and A.statistic_date&lt;#{startDate} and B.source='Inner'
+	</select>
+	
+	<select id="listSumExternalValueFromBegin" resultType="int" parameterType="map">
+		select sum(A.register_number) from channel_register A,
+		channel_channel B where A.channel_id = B.id and A.statistic_date&lt;#{startDate} and B.source='External'
+	</select>
+	
+	<select id="listSumNullValueBetweenDays" resultType="com.netease.channel.entity.ChannelSumValue" parameterType="map">
+		select sum(A.register_number) as statistisIndicater,A.statistic_date as statisticDate,B.source as source from channel_register A,
+		channel_channel B where A.channel_id = B.id and A.statistic_date between #{startDate} and #{endDate} and B.source='null' group by A.statistic_date 
+		ORDER BY statistic_date
+	</select>
+	
+	<select id="listSumInnerValueBetweenDays" resultType="com.netease.channel.entity.ChannelSumValue" parameterType="map">
+		select sum(A.register_number) as statistisIndicater,A.statistic_date as statisticDate,B.source as source from channel_register A,
+		channel_channel B where A.channel_id = B.id and A.statistic_date between #{startDate} and #{endDate} and B.source='Inner' group by A.statistic_date 
+		ORDER BY statistic_date
+	</select>
+	
+	<select id="listSumExternalValueBetweenDays" resultType="com.netease.channel.entity.ChannelSumValue" parameterType="map">
+		select sum(A.register_number) as statistisIndicater,A.statistic_date as statisticDate,B.source as source from channel_register A,
+		channel_channel B where A.channel_id = B.id and A.statistic_date between #{startDate} and #{endDate} and B.source='External' group by A.statistic_date 
+		ORDER BY statistic_date
+	</select>
+    
+    
+</mapper>

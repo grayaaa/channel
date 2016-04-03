@@ -1,0 +1,77 @@
+#set($menu = 9)
+#parse("/include/global_header.vm")
+<div class="page-title">
+    <div class="left">
+        <form id="queryform" action="/user/getUserAuthList.do" method="post" name="queryform">
+            <table>
+                用户名称：<input type="text" name="userName" value="$!userName" size="20">
+                添加时间：<input type="text" id="daterange" value=""/>
+                添加人：<input type="text" name="submitPerson" value="$!submitPerson" size="20">
+                <button type="button" class="btn btn-primary" onclick="javascript:queryData()">查询</button>
+            </table>
+        </form>
+    </div>
+</div>
+
+<div class="page-main">
+    <div class="list-table">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <button type="button" class="btn btn-primary" style="margin-left:0px;" onclick="addUser()">添加用户</button>
+            </tr>
+            <tr>
+                <th>用户名</th>
+                <th>email</th>
+                <th>角色</th>
+                <th>添加时间</th>
+                <th>添加人</th>
+                <th>操作</th>
+            </tr>
+            #foreach($item in $listUser)
+                <tr #if($velocityCount % 2 == 0)class="active"#end>
+                    <td>$!{item.name}</td>
+                    <td>$!{item.email}</td>
+                    <td>$!{item.roles}</td>
+                    <td>$!{viewHelper.getDate($item.ctime, "yyyy/MM/dd HH:mm:ss")}</td>
+                    <td>$!{item.cname}</td>
+                    <td class="i-operate">
+                        <a href="edit?account=$item.account">禁用</a>
+                        <a href="deleteUser.do?userName=${item.account}" onclick="return confirm('确定要禁用该用户吗？')">禁用</a>
+                    </td>
+                </tr>
+            #end
+        </table>
+    </div>
+</div>
+#parse("common/page.vm")
+#set($url="getUserAuthList.do?channelName=$!channelName&settlementPattern=$!settlementPattern&source=$!source")
+#pager($pageData.pageInfo.pageNo,$pageData.pageInfo.pageCount,"$url",true)
+
+<script type="text/javascript">
+    $(function () {
+        $('#daterange').val(moment())
+        $('#daterange').daterangepicker({
+            locale: {
+                format: 'YYYY/MM/DD'
+            },
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        });
+    });
+
+    function openpage() {
+        window.location.replace("/user/add");
+    }
+    ;
+    function queryData() {
+        document.queryform.submit();
+    }
+    ;
+</script>
+#parse("/include/global_footer.vm")
