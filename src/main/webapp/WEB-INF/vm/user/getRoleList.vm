@@ -84,7 +84,8 @@
                         -->
                         <button class="button button-circle button-tiny" onclick='editRole("$item.role","$item.description","$item.permissions");'
                                 data-toggle="tooltip" data-placement="right" title="编辑"><i class="fa fa-edit"></i></button>
-                        <button class="button button-circle button-tiny" onclick='deleteRole("$item.role");'><i class="fa fa-remove"></i></button>
+                        <button class="button button-circle button-tiny" onclick='deleteRole("$item.role");'
+                                data-toggle="tooltip" data-placement="right" title="删除"><i class="fa fa-remove"></i></button>
                     </td>
                 </tr>
                 #end
@@ -210,11 +211,20 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">tree</label>
+                        <label for="name" class="col-sm-2 control-label">渠道分组</label>
                         <div class="col-sm-10">
                             <div id="treeview-checkable" class=""></div>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">渠道分组2</label>
+                        <div class="col-sm-10">
+                            <div class="zTreeDemoBackground left">
+                                <ul id="treeDemo" class="ztree"></ul>
+                            </div>
+                        </div>
+                    </div>
+
 
                 </form>
             </div>
@@ -233,7 +243,7 @@
 
 <script type="text/javascript">
     $(function () {
-        var main_height = $(window).height()-75;
+        var main_height = $(window).height()-70;
         $('#list_role_table').bootstrapTable( 'resetView' , {height: main_height} );
 
 
@@ -287,7 +297,6 @@
                 //$('#checkable-output').prepend('<p>' + node.text + ' was unchecked</p>');
             }
         });
-
     });
 
     function idFormatter(value, row,index) {
@@ -306,40 +315,83 @@
     function getTree() {
         var data = [
             {
-                text: "Parent 1",
+                text: "线上",
+                selectable: true,
+                state: {
+                    checked: true,
+                    //disabled: true,
+                    expanded: false,
+                    selected: true
+                },
+                tags: ['available'],
                 nodes: [
                     {
-                        text: "Child 1",
+                        text: "qq",
                         nodes: [
                             {
-                                text: "Grandchild 1"
+                                text: "qq_01"
                             },
                             {
-                                text: "Grandchild 2"
+                                text: "qq_02"
                             }
                         ]
                     },
                     {
-                        text: "Child 2"
+                        text: "oppo"
                     }
                 ]
             },
             {
-                text: "Parent 2"
-            },
-            {
-                text: "Parent 3"
-            },
-            {
-                text: "Parent 4"
-            },
-            {
-                text: "Parent 5"
+                text: "线下",
+                nodes: [
+                    {
+                        text: "小米装机",
+                        nodes: [
+                            {
+                                text: "mi01"
+                            },
+                            {
+                                text: "mi02"
+                            }
+                        ]
+                    },
+                    {
+                        text: "魅族商店"
+                    }
+                ]
             }
         ];
         // Some logic to retrieve, or generate tree structure
         return data;
     }
+
+    //ztree
+    var setting = {
+        check: {
+            enable: true
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        }
+    };
+    var zNodes =[
+        { id:1, pId:0, name:"线上"},
+        { id:11, pId:1, name:"qq"},
+        { id:111, pId:11, name:"qq01"},
+        { id:112, pId:11, name:"qq02"},
+        { id:12, pId:1, name:"oppo"},
+        { id:121, pId:12, name:"oppo01"},
+        { id:122, pId:12, name:"oppo02"},
+        { id:2, pId:0, name:"线下", checked:true, open:true},
+        { id:21, pId:2, name:"小米"},
+        { id:22, pId:2, name:"魅族"},
+        { id:221, pId:22, name:"meizu01"},
+        { id:222, pId:22, name:"meizu02"}
+    ];
+    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+
     function openpage() {
         window.location.replace("/user/getRoleList");
     }

@@ -3,25 +3,30 @@
 <head>
     <title>渠道评估管理系统</title>
     <meta http-equiv="content-Type" content="text/html;charset=utf-8"/>
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/daterangepicker.css" rel="stylesheet">
-    <link href="/css/buttons.css" rel="stylesheet">
+    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/js/plugins/daterangepicker/daterangepicker.css" rel="stylesheet">
+    <link href="/js/plugins/buttons/buttons.css" rel="stylesheet">
     <link href="/css/font-awesome.min.css" rel="stylesheet">
-    <link href="/css/bootstrap-table.min.css" rel="stylesheet">
+    <link href="/js/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet" type="text/css">
-    <link href="/css/messenger.css" rel="stylesheet" type="text/css">
-    <link href="/css/messenger-theme-air.css" rel="stylesheet" type="text/css">
+    <link href="/js/plugins/bootstrap-messenger/messenger.css" rel="stylesheet" type="text/css">
+    <link href="/js/plugins/bootstrap-messenger/messenger-theme-air.css" rel="stylesheet" type="text/css">
+    <link href="/js/plugins/ztree/metroStyle/metroStyle.css" rel="stylesheet" type="text/css">
 
     <script src="/js/moment.min.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/bootstrap-treeview.js"></script>
-    <script src="/js/daterangepicker.js"></script>
-    <script src="/js/buttons.js"></script>
-    <script src="/js/bootstrap-table.min.js"></script>
-    <script src="/js/bootstrap-table-zh-CN.min.js"></script>
-    <script src="/js/bootbox.min.js"></script>
-    <script src="/js/messenger.min.js"></script>
+    <script src="/js/plugins/bootstrap-treeview/bootstrap-treeview.js"></script>
+    <script src="/js/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="/js/plugins/buttons/buttons.js"></script>
+    <script src="/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/js/plugins/bootstrap-table/bootstrap-table-zh-CN.min.js"></script>
+    <script src="/js/plugins/bootbox/bootbox.min.js"></script>
+    <script src="/js/plugins/bootstrap-messenger/messenger.min.js"></script>
+    <script src="/js/plugins/ztree/jquery.ztree.core.min.js"></script>
+    <script src="/js/plugins/ztree/jquery.ztree.excheck.min.js"></script>
+
+
 
     <!--
     <link href="/css/smoothness/jquery-ui.min.css" rel="stylesheet">

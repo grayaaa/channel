@@ -27,7 +27,7 @@
 	<mvc:resources location="/fonts/" mapping="/fonts/**"/>
 	<mvc:resources location="/images/" mapping="/images/**"/>
 	<mvc:resources location="/js/" mapping="/js/**"/>
-	
+
 	<!-- velocity 模板配置 -->
 	<bean id="velocityConfig"
 		class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">

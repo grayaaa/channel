@@ -76,7 +76,7 @@
     <!-- authenticator -->
     <filter>
         <filter-name>whitelist_auth_filter</filter-name>
-        <filter-class>com.netease.channel.util.AuthenticatorFilter</filter-class>
+        <filter-class>com.netease.channel.security.AuthenticatorFilter</filter-class>
         <init-param>
             <param-name>login_url</param-name>
             <param-value>http://buzz096x.hz.youdao.com:8080</param-value>

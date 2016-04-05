@@ -96,13 +96,17 @@ insert into channel_user (uid,email,name,roles,cname,ctime,ltime) values (2,'qmg
 insert into channel_user (uid,email,name,roles,cname,ctime,ltime) values (3,'qmgeng3@126.com','qmgeng','admin,test2','qmgeng','2016-03-01','2016-03-02');
 insert into channel_user (uid,email,name,roles,cname,ctime,ltime) values (4,'qmgeng4@126.com','qmgeng','test2','qmgeng','2016-03-01','2016-03-02');
 insert into channel_user (uid,email,name,roles,cname,ctime,ltime) values (5,'qmgeng5@126.com','qmgeng','test','qmgeng','2016-03-01','2016-03-02');
+insert into channel_user (uid,email,name,roles,cname,ctime,ltime) values (10,'qmgeng@corp.netease.com','corp.netease.com','admin','qmgeng','2016-03-01','2016-03-02');
+update channel_user set roles='root' where email='qmgeng@corp.netease.com';
 
-
-
-
-
-
-
+drop table if exists channel_user_group;
+create table channel_user_group
+(
+  id             bigint(20) not null auto_increment comment '自增ID',
+  email          varchar(30) not null comment '用户信息',
+  gid            bigint(20) not null comment '渠道组',
+  primary key (id)
+);
 
 
 
