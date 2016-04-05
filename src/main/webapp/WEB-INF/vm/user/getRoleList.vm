@@ -454,7 +454,7 @@
         bootbox.prompt("确认请输入yes or y:", function(result) {
             if (result === "yes" || result === "y") {
                 console.log(role);
-                $.post("/user/deleteRole", { role: role },
+                $.post("/user/deleteRole.do", { role: role },
                         function(data){
                             console.log(data.msg);
                             window.location.reload();

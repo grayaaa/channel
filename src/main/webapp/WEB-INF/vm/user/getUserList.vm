@@ -14,41 +14,166 @@
 </div>
 
 <div class="page-main">
+##    <div class="list-table">
+##        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+##            <tr>
+##                <button type="button" class="btn btn-primary" style="margin-left:0px;" onclick="addUser()">添加用户</button>
+##            </tr>
+##            <tr>
+##                <th>用户名</th>
+##                <th>email</th>
+##                <th>角色</th>
+##                <th>添加时间</th>
+##                <th>添加人</th>
+##                <th>操作</th>
+##            </tr>
+##            #foreach($item in $listUser)
+##                <tr #if($velocityCount % 2 == 0)class="active"#end>
+##                    <td>$!{item.name}</td>
+##                    <td>$!{item.email}</td>
+##                    <td>$!{item.roles}</td>
+##                    <td>$!{viewHelper.getDate($item.ctime, "yyyy/MM/dd HH:mm:ss")}</td>
+##                    <td>$!{item.cname}</td>
+##                    <td class="i-operate">
+##                        <a href="edit?account=$item.account">禁用</a>
+##                        <a href="deleteUser?userName=${item.account}" onclick="return confirm('确定要禁用该用户吗？')">禁用</a>
+##                    </td>
+##                </tr>
+##            #end
+##        </table>
+##    </div>
     <div class="list-table">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <table id="list_role_table" data-toggle="table" data-pagination="true" data-page-size="20"
+               data-striped="true"
+               data-click-to-select="true"
+               data-toolbar="#toolbar"
+               data-search="true"
+               data-classes="table table-no-bordered" data-row-style="rowStyle">
+            <thead>
             <tr>
-                <button type="button" class="btn btn-primary" style="margin-left:0px;" onclick="addUser()">添加用户</button>
-            </tr>
-            <tr>
-                <th>用户名</th>
-                <th>email</th>
-                <th>角色</th>
-                <th>添加时间</th>
+                <th data-formatter="idFormatter">序号</th>
+                <th data-sortable="true">用户名</th>
+                <th data-sortable="true">email</th>
+                <th data-sortable="true">角色</th>
+                <th data-sortable="true">添加时间</th>
                 <th>添加人</th>
                 <th>操作</th>
             </tr>
-            #foreach($item in $listUser)
+            </thead>
+            <tbody>
+                #foreach($item in $listUser)
                 <tr #if($velocityCount % 2 == 0)class="active"#end>
+                    <td></td>
                     <td>$!{item.name}</td>
                     <td>$!{item.email}</td>
                     <td>$!{item.roles}</td>
                     <td>$!{viewHelper.getDate($item.ctime, "yyyy/MM/dd HH:mm:ss")}</td>
                     <td>$!{item.cname}</td>
-                    <td class="i-operate">
-                        <a href="edit?account=$item.account">禁用</a>
-                        <a href="deleteUser.do?userName=${item.account}" onclick="return confirm('确定要禁用该用户吗？')">禁用</a>
+                    <td>
+                        <button class="button button-circle button-tiny" onclick='editUser("$item.name","$item.email","$item.permissions");'
+                                data-toggle="tooltip" data-placement="right" title="编辑"><i class="fa fa-edit"></i></button>
+                        <button class="button button-circle button-tiny" onclick='deleteUser("$item.email");'
+                                data-toggle="tooltip" data-placement="right" title="删除"><i class="fa fa-remove"></i></button>
                     </td>
                 </tr>
-            #end
+                #end
+            </tbody>
         </table>
     </div>
 </div>
-#parse("common/page.vm")
-#set($url="getUserAuthList.do?channelName=$!channelName&settlementPattern=$!settlementPattern&source=$!source")
-#pager($pageData.pageInfo.pageNo,$pageData.pageInfo.pageCount,"$url",true)
+<div id="toolbar" class="btn-group">
+    <button id="btn_add_user" type="button" class="btn btn-primary btn-lg" style="line-height:24px;">
+        <span class="fa fa-plus" aria-hidden="true"></span>新增
+    </button>
+</div>
+<!-- 新增角色弹出框 -->
+<div class="modal fade" id="add_user" tabindex="-1" role="dialog"
+     aria-labelledby="add_role_label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="add_role_label">
+                    角色新增
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="lastname" class="col-sm-2 control-label">角色名称</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="add_role_name"
+                                   placeholder="角色名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="col-sm-2 control-label">描述</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="add_role_desc"
+                                   placeholder="描述">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="col-sm-2 control-label">拥有权限</label>
+
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="add_role_permissions"
+                                   placeholder="拥有权限">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">状态</label>
+
+                        <div class="col-sm-10">
+                            <select class="form-control" id="add_role_status">
+                                <option>1</option>
+                                <option>0</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">渠道分组</label>
+                        <div class="col-sm-10">
+                            <div id="treeview-checkable" class=""></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">渠道分组2</label>
+                        <div class="col-sm-10">
+                            <div class="zTreeDemoBackground left">
+                                <ul id="treeDemo" class="ztree"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" onclick='addRole();'>
+                    确认
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
 
 <script type="text/javascript">
     $(function () {
+        //table高度设置
+        var main_height = $(window).height()-105;
+        $('#list_role_table').bootstrapTable( 'resetView' , {height: main_height} );
+        //提示
+        $("[data-toggle='tooltip']").tooltip();
+        //日期
         $('#daterange').val(moment())
         $('#daterange').daterangepicker({
             locale: {
@@ -63,7 +188,15 @@
                 'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
             }
         });
+        //添加用户
+        $("#btn_add_user").click(function(){
+            $("#add_user").modal("toggle");
+        });
     });
+
+    function idFormatter(value, row,index) {
+        return index+1;
+    }
 
     function openpage() {
         window.location.replace("/user/add");
@@ -74,6 +207,22 @@
     }
 
     function addUser(){
+    }
+
+    //角色删除
+    function deleteUser(email){
+        bootbox.prompt("确认删除用户"+email+"请输入yes or y:", function(result) {
+            if (result === "yes" || result === "y") {
+                console.log(role);
+                $.post("/user/deleteUser.do", { email: email },
+                        function(data){
+                            console.log(data.msg);
+                            window.location.reload();
+                        }, "json");
+            } else {
+                console.log("error");
+            }
+        });
     }
 </script>
 #parse("/include/global_footer.vm")

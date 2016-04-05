@@ -94,7 +94,7 @@ public class UserController {
     }
 
     @RequiresPermissions("role:del")
-    @RequestMapping(value = "/deleteRole", method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteRole.do", method = RequestMethod.POST)
     public
     @ResponseBody
     Map<String, Object> deleteRole(String role) {
