@@ -23,5 +23,9 @@ public interface UserService {
     public void addRole(Role role);
 
     public void addUser(User user);
+
+    public void deleteUser(String email);
+
+    public void deleteRole(String role);
 	
 }

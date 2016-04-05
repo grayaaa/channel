@@ -54,4 +54,18 @@ public class UserDaoImpl implements UserDao {
     public void addUser(User user) {
         sqlSession.insert(namespace + ".addUser", user);
     }
+
+    @Override
+    public void deleteUser(String email) {
+        Map<String,Object> queryMap = new HashMap<String,Object>();
+        queryMap.put("email", email);
+        sqlSession.delete(namespace + ".deleteUser", queryMap);
+    }
+
+    @Override
+    public void deleteRole(String role) {
+        Map<String,Object> queryMap = new HashMap<String,Object>();
+        queryMap.put("role", role);
+        sqlSession.delete(namespace + ".deleteRole", queryMap);
+    }
 }

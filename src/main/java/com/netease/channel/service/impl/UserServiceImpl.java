@@ -66,4 +66,14 @@ public class UserServiceImpl implements UserService {
     public void addUser(User user) {
         userDao.addUser(user);
     }
+
+    @Override
+    public void deleteUser(String email) {
+        userDao.deleteUser(email);
+    }
+
+    @Override
+    public void deleteRole(String role) {
+        userDao.deleteRole(role);
+    }
 }

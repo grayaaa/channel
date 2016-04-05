@@ -19,4 +19,8 @@ public interface UserDao {
 
     public void addUser(User user);
 
+    public void deleteUser(String email);
+
+    public void deleteRole(String role);
+
 }

@@ -72,6 +72,8 @@
     function queryData() {
         document.queryform.submit();
     }
-    ;
+
+    function addUser(){
+    }
 </script>
 #parse("/include/global_footer.vm")

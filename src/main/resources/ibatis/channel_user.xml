@@ -48,6 +48,14 @@
     <insert id="addRole" parameterType="com.netease.channel.entity.Role">
         insert into channel_role(role,description,permissions,available) values(#{role},#{description},#{permissions},#{available})
     </insert>
+
+    <delete id="deleteUser" parameterType="map">
+        delete from channel_user where email = #{email}
+    </delete>
+
+    <delete id="deleteRole" parameterType="map">
+        delete from channel_role where role = #{role}
+    </delete>
 	
 	<!-- 返回最大ID-->
 	<select id="getMaxId" resultType="int">

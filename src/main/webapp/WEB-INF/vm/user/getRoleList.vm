@@ -1,42 +1,105 @@
 #set($menu = 10)
 #parse("/include/global_header.vm")
+<!--
 <div class="page-title">
     <div class="left">
         <form id="queryform" action="/roleStastic/getroleRealReportList.do" method="post" name="queryform">
             <table>
-                <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#add_role">新增角色</button>
+                <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#add_role" >新增角色</button>
             </table>
         </form>
     </div>
 </div>
+-->
 <div class="page-main">
+##
+##    <div class="list-table">
+##        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+##            <tr>
+##                <th>序号</th>
+##                <th>角色名</th>
+##                <th>描述</th>
+##                <th>权限</th>
+##                <th>当前状态</th>
+##                <th>操作</th>
+##            </tr>
+##            #foreach($item in $listRole)
+##                <tr #if($velocityCount % 2 == 0)class="active"#end>
+##                    <td></td>
+##                    <td>$!{item.role}</td>
+##                    <td>$!{item.description}</td>
+##                    <td>$!{item.permissions}</td>
+##                    <td>$!{item.available}</td>
+##                    <td>
+##                        <!--
+##                        <button class="btn btn-primary btn-lg" type="button" id="edit_role_btn"
+##                                onclick='editRole("$item.role","$item.description","$item.permissions");'>编辑
+##                        </button>
+##                        -->
+##                        <button class="button button-circle button-tiny" onclick='editRole("$item.role","$item.description","$item.permissions");'
+##                                data-toggle="tooltip" data-placement="right" title="编辑"><i class="fa fa-edit"></i></button>
+##                        <button class="button button-circle button-tiny" onclick='editRole("$item.role","$item.description","$item.permissions");'><i class="fa fa-remove"></i></button>
+##                    </td>
+##                </tr>
+##            #end
+##        </table>
+##    </div>
+##
     <div class="list-table">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <table id="list_role_table" data-toggle="table" data-pagination="true" data-page-size="20"
+               ##data-height="100%"
+               data-striped="true"
+               data-click-to-select="true"
+               data-toolbar="#toolbar"
+               data-search="true"
+               ##data-show-refresh="true"
+               ##data-show-columns="true"
+               ##data-show-toggle="true"
+               data-classes="table table-no-bordered" data-row-style="rowStyle">
+            <thead>
             <tr>
-                <th>序号</th>
-                <th>角色名</th>
-                <th>描述</th>
-                <th>权限</th>
-                <th>当前状态</th>
+                <th data-field="state" data-checkbox="true" data-formatter="checkedFormatter" ></th>
+                <th data-formatter="idFormatter">序号</th>
+                <th data-sortable="true">角色名</th>
+                <th >描述</th>
+                <th data-sortable="true">权限</th>
+                <th data-sortable="true">当前状态</th>
                 <th>操作</th>
             </tr>
-            #foreach($item in $listRole)
+            </thead>
+            <tbody>
+                #foreach($item in $listRole)
                 <tr #if($velocityCount % 2 == 0)class="active"#end>
+                    <td></td>
                     <td></td>
                     <td>$!{item.role}</td>
                     <td>$!{item.description}</td>
                     <td>$!{item.permissions}</td>
                     <td>$!{item.available}</td>
                     <td>
-                        <!--<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#edit_role">编辑</button>-->
+                        <!--
                         <button class="btn btn-primary btn-lg" type="button" id="edit_role_btn"
                                 onclick='editRole("$item.role","$item.description","$item.permissions");'>编辑
                         </button>
+                        -->
+                        <button class="button button-circle button-tiny" onclick='editRole("$item.role","$item.description","$item.permissions");'
+                                data-toggle="tooltip" data-placement="right" title="编辑"><i class="fa fa-edit"></i></button>
+                        <button class="button button-circle button-tiny" onclick='deleteRole("$item.role");'><i class="fa fa-remove"></i></button>
                     </td>
                 </tr>
-            #end
+                #end
+            </tbody>
         </table>
     </div>
+</div>
+
+<div id="toolbar" class="btn-group">
+    <button id="btn_add_role" type="button" class="btn btn-primary btn-lg" style="line-height:24px;">
+        <span class="fa fa-plus" aria-hidden="true"></span>新增
+    </button>
+    <button id="btn_delete_role" type="button" class="btn btn-primary btn-lg" style="line-height:24px;">
+        <span class="fa fa-remove" aria-hidden="true"></span>删除
+    </button>
 </div>
 
 ##parse("common/page.vm")
@@ -170,18 +233,41 @@
 
 <script type="text/javascript">
     $(function () {
-        //$('table tr:not(:first)').remove();
-        var len = $('table tr').length;
-        console.log(len)
-        for (var i = 1; i < len; i++) {
-            $('table tr:eq(' + i + ') td:first').text(i);
+        var main_height = $(window).height()-75;
+        $('#list_role_table').bootstrapTable( 'resetView' , {height: main_height} );
+
+
+        //提示
+        $("[data-toggle='tooltip']").tooltip();
+
+//        //表格序号
+//        //$('table tr:not(:first)').remove();
+//        var len = $('table tr').length;
+//        console.log(len)
+//        for (var i = 1; i < len; i++) {
+//            $('table tr:eq(' + i + ') td:first').text(i);
+//        }
+
+
+        $("#btn_add_role").click(function(){
+            console.log("btn_add_role")
+            $("#add_role").modal("toggle");
+        });
+
+        //messenger
+        Messenger.options = {
+            extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
+            theme: 'air'
         }
+        $("#btn_delete_role").click(function(){
+            console.log("btn_delete_role")
+            $.globalMessenger().post({
+                message: "角色删除成功",
+                type: "success"
+            });
+        });
 
-//        $("#edit_role_btn").click(function(){
-//            console.log("edit_role_btn")
-//            $("#edit_role").modal("toggle");
-//        });
-
+        //树插件
         $('#treeview-checkable').treeview({
             data: getTree(),
             showIcon: true,
@@ -203,6 +289,20 @@
         });
 
     });
+
+    function idFormatter(value, row,index) {
+            return index+1;
+    }
+    function checkedFormatter(value, row, index) {
+//        if (index === 5) {
+//            return {
+//                disabled: true,
+//                checked: true
+//            }
+//        }
+        return value;
+    }
+
     function getTree() {
         var data = [
             {
@@ -292,6 +392,25 @@
         $("#edit_role_permission").val(permission);
         $("#edit_role_desc").val(desc);
 
+    }
+
+    //角色删除
+    function deleteRole(role){
+//        bootbox.alert("Hello world!", function() {
+//            console.log("Alert Callback");
+//        });
+        bootbox.prompt("确认请输入yes or y:", function(result) {
+            if (result === "yes" || result === "y") {
+                console.log(role);
+                $.post("/user/deleteRole", { role: role },
+                        function(data){
+                            console.log(data.msg);
+                            window.location.reload();
+                        }, "json");
+            } else {
+                console.log("error");
+            }
+        });
     }
 
 </script>

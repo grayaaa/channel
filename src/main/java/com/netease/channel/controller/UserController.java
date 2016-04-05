@@ -80,4 +80,28 @@ public class UserController {
 //        redirectAttributes.addFlashAttribute("msg", "true");
 //        return "redirect:/user/getRoleList.do";
 //    }
+
+    @RequiresPermissions("user:del")
+    @RequestMapping(value = "/deleteUser.do", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Map<String, Object> deleteUser(String email) {
+        userService.deleteUser(email);
+
+        Map<String, Object> resultMap = Maps.newHashMap();
+        resultMap.put("msg", "true");
+        return resultMap;
+    }
+
+    @RequiresPermissions("role:del")
+    @RequestMapping(value = "/deleteRole", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Map<String, Object> deleteRole(String role) {
+        userService.deleteRole(role);
+
+        Map<String, Object> resultMap = Maps.newHashMap();
+        resultMap.put("msg", "true");
+        return resultMap;
+    }
 }
