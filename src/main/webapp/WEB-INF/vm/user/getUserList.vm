@@ -97,61 +97,45 @@
                     &times;
                 </button>
                 <h4 class="modal-title" id="add_role_label">
-                    角色新增
+                    用户新增
                 </h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" role="form">
                     <div class="form-group">
-                        <label for="lastname" class="col-sm-2 control-label">角色名称</label>
+                        <label for="lastname" class="col-sm-2 control-label">用户名</label>
 
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="add_role_name"
-                                   placeholder="角色名称">
+                            <input type="text" class="form-control" id="add_user_name"
+                                   placeholder="用户名">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="lastname" class="col-sm-2 control-label">描述</label>
+                        <label for="lastname" class="col-sm-2 control-label">email</label>
 
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="add_role_desc"
-                                   placeholder="描述">
+                            <input type="text" class="form-control" id="add_user_email"
+                                   placeholder="email">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="lastname" class="col-sm-2 control-label">拥有权限</label>
+                        <label for="name" class="col-sm-2 control-label">角色</label>
 
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="add_role_permissions"
-                                   placeholder="拥有权限">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">状态</label>
-
-                        <div class="col-sm-10">
-                            <select class="form-control" id="add_role_status">
+                            <select class="form-control" id="add_user_role">
                                 <option>1</option>
                                 <option>0</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">渠道分组</label>
-                        <div class="col-sm-10">
-                            <div id="treeview-checkable" class=""></div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">渠道分组2</label>
+                        <label for="name" class="col-sm-2 control-label">渠道授权</label>
                         <div class="col-sm-10">
                             <div class="zTreeDemoBackground left">
-                                <ul id="treeDemo" class="ztree"></ul>
+                                <ul id="add_user_permissions" class="ztree"></ul>
                             </div>
                         </div>
                     </div>
-
-
                 </form>
             </div>
             <div class="modal-footer">
@@ -160,6 +144,63 @@
                 </button>
                 <button type="button" class="btn btn-primary" onclick='addRole();'>
                     确认
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!-- 用户编辑弹出框 -->
+<div class="modal fade" id="edit_user" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="edit_user_Label">用户编辑
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">用户名</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="edit_user_name">***</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="col-sm-2 control-label">邮箱</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="edit_user_email">***</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">角色</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="edit_user_role">
+                                <option>1</option>
+                                <option>0</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">渠道授权</label>
+                        <div class="col-sm-10">
+                            <div class="zTreeDemoBackground left">
+                                <ul id="edit_user_permissions" class="ztree"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary">
+                    提交更改
                 </button>
             </div>
         </div><!-- /.modal-content -->
@@ -209,9 +250,19 @@
     function addUser(){
     }
 
+    //用户编辑
+    function editUser(name, email, role) {
+        console.log(name)
+        $("#edit_user").modal("toggle");
+        $("#edit_user_name").text(name);
+        $("#edit_user_email").text(email);
+        $("#edit_user_role").val(role);
+
+    }
+
     //角色删除
     function deleteUser(email){
-        bootbox.prompt("确认删除用户"+email+"请输入yes or y:", function(result) {
+        bootbox.prompt("确认删除用户["+email+"]请输入yes or y:", function(result) {
             if (result === "yes" || result === "y") {
                 console.log(role);
                 $.post("/user/deleteUser.do", { email: email },
