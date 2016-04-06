@@ -7,15 +7,18 @@
     <link href="/js/plugins/daterangepicker/daterangepicker.css" rel="stylesheet">
     <link href="/js/plugins/buttons/buttons.css" rel="stylesheet">
     <link href="/css/font-awesome.min.css" rel="stylesheet">
+
     <link href="/js/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <link href="/js/plugins/bootstrap-messenger/messenger.css" rel="stylesheet" type="text/css">
     <link href="/js/plugins/bootstrap-messenger/messenger-theme-air.css" rel="stylesheet" type="text/css">
     <link href="/js/plugins/ztree/metroStyle/metroStyle.css" rel="stylesheet" type="text/css">
+    <link href="/js/plugins/bootstrap-multiselect/bootstrap-multiselect.css" rel="stylesheet">
 
     <script src="/js/moment.min.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
+
     <script src="/js/plugins/bootstrap-treeview/bootstrap-treeview.js"></script>
     <script src="/js/plugins/daterangepicker/daterangepicker.js"></script>
     <script src="/js/plugins/buttons/buttons.js"></script>
@@ -25,6 +28,7 @@
     <script src="/js/plugins/bootstrap-messenger/messenger.min.js"></script>
     <script src="/js/plugins/ztree/jquery.ztree.core.min.js"></script>
     <script src="/js/plugins/ztree/jquery.ztree.excheck.min.js"></script>
+    <script src="/js/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
 
 
 
@@ -76,7 +80,7 @@
                         <a href="#four">系统管理<span></span></a>
                         <ul class="sub-menu" style="display: block">
                             <li><a href="/user/getUserList.do" #if($menu == 9)class="active"#end>用户管理</a></li>
-                            <li><a href="/user/getRoleList.do" #if($menu == 10)class="active"#end>角色管理</a></li>
+                            <li><a href="/user/getRoleListView.do" #if($menu == 10)class="active"#end>角色管理</a></li>
                         </ul>
                     #end
                 </li>

@@ -70,10 +70,13 @@
                     <td>$!{viewHelper.getDate($item.ctime, "yyyy/MM/dd HH:mm:ss")}</td>
                     <td>$!{item.cname}</td>
                     <td>
-                        <button class="button button-circle button-tiny" onclick='editUser("$item.name","$item.email","$item.permissions");'
-                                data-toggle="tooltip" data-placement="right" title="编辑"><i class="fa fa-edit"></i></button>
+                        <button class="button button-circle button-tiny"
+                                onclick='editUser("$item.name","$item.email","$item.roles");'
+                                data-toggle="tooltip" data-placement="right" title="编辑"><i class="fa fa-edit"></i>
+                        </button>
                         <button class="button button-circle button-tiny" onclick='deleteUser("$item.email");'
-                                data-toggle="tooltip" data-placement="right" title="删除"><i class="fa fa-remove"></i></button>
+                                data-toggle="tooltip" data-placement="right" title="删除"><i class="fa fa-remove"></i>
+                        </button>
                     </td>
                 </tr>
                 #end
@@ -122,14 +125,13 @@
                         <label for="name" class="col-sm-2 control-label">角色</label>
 
                         <div class="col-sm-10">
-                            <select class="form-control" id="add_user_role">
-                                <option>1</option>
-                                <option>0</option>
+                            <select class="form-control" id="add_user_role" multiple="multiple">
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">渠道授权</label>
+
                         <div class="col-sm-10">
                             <div class="zTreeDemoBackground left">
                                 <ul id="add_user_permissions" class="ztree"></ul>
@@ -166,27 +168,29 @@
                 <form class="form-horizontal" role="form">
                     <div class="form-group">
                         <label class="col-sm-2 control-label">用户名</label>
+
                         <div class="col-sm-10">
                             <p class="form-control-static" id="edit_user_name">***</p>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="lastname" class="col-sm-2 control-label">邮箱</label>
+
                         <div class="col-sm-10">
                             <p class="form-control-static" id="edit_user_email">***</p>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">角色</label>
+
                         <div class="col-sm-10">
                             <select class="form-control" id="edit_user_role">
-                                <option>1</option>
-                                <option>0</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">渠道授权</label>
+
                         <div class="col-sm-10">
                             <div class="zTreeDemoBackground left">
                                 <ul id="edit_user_permissions" class="ztree"></ul>
@@ -210,8 +214,8 @@
 <script type="text/javascript">
     $(function () {
         //table高度设置
-        var main_height = $(window).height()-105;
-        $('#list_role_table').bootstrapTable( 'resetView' , {height: main_height} );
+        var main_height = $(window).height() - 105;
+        $('#list_role_table').bootstrapTable('resetView', {height: main_height});
         //提示
         $("[data-toggle='tooltip']").tooltip();
         //日期
@@ -230,13 +234,54 @@
             }
         });
         //添加用户
-        $("#btn_add_user").click(function(){
+        $("#btn_add_user").click(function () {
             $("#add_user").modal("toggle");
         });
+
+        //多选框
+        $('#add_user_role').multiselect({
+            noneSelected : '请选择',
+            enableFiltering: true,
+            includeSelectAllOption: true,
+            buttonClass: 'btn btn-link',
+            buttonWidth: '460px',
+            optionLabel: function(element) {
+                return $(element).html() + '(' + $(element).val() + ')';
+            },
+            optionClass: function(element) {
+                var value = $(element).val();
+
+                if (value%2 == 0) {
+                    return 'even';
+                }
+                else {
+                    return 'odd';
+                }
+            }
+        });
+
+        //添加role
+        $.get("/user/getRoleList.do", function (data) {
+            var roles = new Array();
+            var obj = new Object();
+            $.each(data, function (i, item) {
+                //$("#add_user_role").append("<option value='" + item + "'>" + item + "</option>");
+                obj = {
+                    label : item,
+                    value : item
+                };
+                roles.push(obj);
+                $("#edit_user_role").append("<option value='" + item + "'>" + item + "</option>");
+            });
+            $('#add_user_role').multiselect('dataprovider', roles);
+        });
+
+
+
     });
 
-    function idFormatter(value, row,index) {
-        return index+1;
+    function idFormatter(value, row, index) {
+        return index + 1;
     }
 
     function openpage() {
@@ -247,26 +292,27 @@
         document.queryform.submit();
     }
 
-    function addUser(){
+    function addUser() {
     }
 
     //用户编辑
     function editUser(name, email, role) {
-        console.log(name)
         $("#edit_user").modal("toggle");
         $("#edit_user_name").text(name);
         $("#edit_user_email").text(email);
-        $("#edit_user_role").val(role);
+
+        //$('#edit_user_role').multiselect('select', role);
+        $('#edit_user_role').val(role);
 
     }
 
     //角色删除
-    function deleteUser(email){
-        bootbox.prompt("确认删除用户["+email+"]请输入yes or y:", function(result) {
+    function deleteUser(email) {
+        bootbox.prompt("确认删除用户[" + email + "]请输入yes or y:", function (result) {
             if (result === "yes" || result === "y") {
                 console.log(role);
-                $.post("/user/deleteUser.do", { email: email },
-                        function(data){
+                $.post("/user/deleteUser.do", {email: email},
+                        function (data) {
                             console.log(data.msg);
                             window.location.reload();
                         }, "json");

@@ -1,5 +1,6 @@
 package com.netease.channel.controller;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.netease.channel.entity.Role;
 import com.netease.channel.entity.User;
@@ -51,8 +52,8 @@ public class UserController {
     }
 
     @RequiresPermissions("role:view")
-    @RequestMapping(value = "/getRoleList.do")
-    public String getRoleList(HttpServletRequest request, HttpServletResponse response, ModelMap mm) {
+    @RequestMapping(value = "/getRoleListView.do")
+    public String getRoleListView(HttpServletRequest request, HttpServletResponse response, ModelMap mm) {
         logger.debug("start getRoleList");
 
         List<Role> listRole = userService.getRoleList();
@@ -103,5 +104,19 @@ public class UserController {
         Map<String, Object> resultMap = Maps.newHashMap();
         resultMap.put("msg", "true");
         return resultMap;
+    }
+
+    @RequiresPermissions("role:view")
+    @RequestMapping(value = "/getRoleList.do")
+    public
+    @ResponseBody
+    List<String> getRoleList(HttpServletRequest request, HttpServletResponse response, ModelMap mm) {
+        List<Role> listRole = userService.getRoleList();
+
+        List<String> resultList = Lists.newArrayList();
+        for (Role role : listRole) {
+            resultList.add(role.getRole());
+        }
+        return resultList;
     }
 }
