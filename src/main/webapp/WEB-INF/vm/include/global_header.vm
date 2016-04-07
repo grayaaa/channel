@@ -29,8 +29,8 @@
     <script src="/js/plugins/ztree/jquery.ztree.core.min.js"></script>
     <script src="/js/plugins/ztree/jquery.ztree.excheck.min.js"></script>
     <script src="/js/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
-
-
+    <script src="/js/plugins/echarts/echarts.common.min.js"></script>
+    <script src="/js/plugins/echarts/macarons.js"></script>
 
     <!--
     <link href="/css/smoothness/jquery-ui.min.css" rel="stylesheet">

@@ -184,7 +184,7 @@
                         <label for="name" class="col-sm-2 control-label">角色</label>
 
                         <div class="col-sm-10">
-                            <select class="form-control" id="edit_user_role">
+                            <select class="form-control" id="edit_user_role"  multiple="multiple">
                             </select>
                         </div>
                     </div>
@@ -259,6 +259,27 @@
                 }
             }
         });
+        //多选框
+        $('#edit_user_role').multiselect({
+            noneSelected : '请选择',
+            enableFiltering: true,
+            includeSelectAllOption: true,
+            buttonClass: 'btn btn-link',
+            buttonWidth: '460px',
+            optionLabel: function(element) {
+                return $(element).html() + '(' + $(element).val() + ')';
+            },
+            optionClass: function(element) {
+                var value = $(element).val();
+
+                if (value%2 == 0) {
+                    return 'even';
+                }
+                else {
+                    return 'odd';
+                }
+            }
+        });
 
         //添加role
         $.get("/user/getRoleList.do", function (data) {
@@ -271,9 +292,10 @@
                     value : item
                 };
                 roles.push(obj);
-                $("#edit_user_role").append("<option value='" + item + "'>" + item + "</option>");
+                //$("#edit_user_role").append("<option value='" + item + "'>" + item + "</option>");
             });
             $('#add_user_role').multiselect('dataprovider', roles);
+            $('#edit_user_role').multiselect('dataprovider', roles);
         });
 
 
@@ -301,8 +323,10 @@
         $("#edit_user_name").text(name);
         $("#edit_user_email").text(email);
 
-        //$('#edit_user_role').multiselect('select', role);
-        $('#edit_user_role').val(role);
+        var roleArray = role.split(',');
+        $('#edit_user_role').multiselect('deselectAll', false);
+        $('#edit_user_role').multiselect('select', roleArray);
+        //$('#edit_user_role').val(role);
 
     }
 
