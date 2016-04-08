@@ -54,7 +54,8 @@
                 <th data-formatter="idFormatter">序号</th>
                 <th data-sortable="true">用户名</th>
                 <th data-sortable="true">email</th>
-                <th data-sortable="true">角色</th>
+                <th data-sortable="true">角色列表</th>
+                <th data-sortable="true">产品列表</th>
                 <th data-sortable="true">添加时间</th>
                 <th>添加人</th>
                 <th>操作</th>
@@ -67,6 +68,7 @@
                     <td>$!{item.name}</td>
                     <td>$!{item.email}</td>
                     <td>$!{item.roles}</td>
+                    <td>$!{item.proids}</td>
                     <td>$!{viewHelper.getDate($item.ctime, "yyyy/MM/dd HH:mm:ss")}</td>
                     <td>$!{item.cname}</td>
                     <td>
@@ -181,10 +183,22 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label">角色</label>
+                        <label for="name" class="col-sm-2 control-label">角色列表</label>
 
                         <div class="col-sm-10">
-                            <select class="form-control" id="edit_user_role"  multiple="multiple">
+                            <select class="form-control" id="edit_user_role" multiple="multiple">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label">产品列表</label>
+
+                        <div class="col-sm-10">
+                            <select class="form-control" id="edit_user_proids" multiple="multiple">
+                                <option value="volvo">Volvo</option>
+                                <option value="saab">Saab</option>
+                                <option value="opel">Opel</option>
+                                <option value="audi">Audi</option>
                             </select>
                         </div>
                     </div>
@@ -239,40 +253,19 @@
         });
 
         //多选框
-        $('#add_user_role').multiselect({
-            noneSelected : '请选择',
+        $('#add_user_role,#edit_user_proids,#edit_user_role').multiselect({
+            noneSelected: '请选择',
             enableFiltering: true,
             includeSelectAllOption: true,
             buttonClass: 'btn btn-link',
             buttonWidth: '460px',
-            optionLabel: function(element) {
+            optionLabel: function (element) {
                 return $(element).html() + '(' + $(element).val() + ')';
             },
-            optionClass: function(element) {
+            optionClass: function (element) {
                 var value = $(element).val();
 
-                if (value%2 == 0) {
-                    return 'even';
-                }
-                else {
-                    return 'odd';
-                }
-            }
-        });
-        //多选框
-        $('#edit_user_role').multiselect({
-            noneSelected : '请选择',
-            enableFiltering: true,
-            includeSelectAllOption: true,
-            buttonClass: 'btn btn-link',
-            buttonWidth: '460px',
-            optionLabel: function(element) {
-                return $(element).html() + '(' + $(element).val() + ')';
-            },
-            optionClass: function(element) {
-                var value = $(element).val();
-
-                if (value%2 == 0) {
+                if (value % 2 == 0) {
                     return 'even';
                 }
                 else {
@@ -288,8 +281,8 @@
             $.each(data, function (i, item) {
                 //$("#add_user_role").append("<option value='" + item + "'>" + item + "</option>");
                 obj = {
-                    label : item,
-                    value : item
+                    label: item,
+                    value: item
                 };
                 roles.push(obj);
                 //$("#edit_user_role").append("<option value='" + item + "'>" + item + "</option>");
@@ -297,7 +290,6 @@
             $('#add_user_role').multiselect('dataprovider', roles);
             $('#edit_user_role').multiselect('dataprovider', roles);
         });
-
 
 
     });

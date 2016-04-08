@@ -78,6 +78,16 @@ insert into channel_role(rid,role,description,permissions,available) values(2,'a
 insert into channel_role(rid,role,description,permissions,available) values(3,'test','test','channel:*',1);
 insert into channel_role(rid,role,description,permissions,available) values(4,'test2','test2','user:*',1);
 
+drop table if exists channel_produce;
+create table channel_produce
+(
+  pid             varchar(16) comment '产品ID',
+  name            varchar(30) comment '产品名',
+  cname           varchar(30) not null comment '创建人',
+  ctime           datetime not null comment '创建时间',
+  state           tinyint(1) default NULL comment '状态',
+  primary key (pid)
+);
 
 drop table if exists channel_user;
 create table channel_user
@@ -86,27 +96,37 @@ create table channel_user
   email           varchar(30) not null comment '邮箱',
   name            varchar(30) comment '姓名',
   roles           varchar(30) not null comment '角色名称',
+  proids          varchar(30) not null comment '产品名称',
   cname           varchar(30) not null comment '创建人',
   ctime           datetime not null comment '创建时间',
   ltime           datetime not null comment '修改时间',
   primary key (uid)
 );
-insert into channel_user (uid,email,name,roles,cname,ctime,ltime) values (1,'qmgeng1@126.com','qmgeng','root','qmgeng','2016-03-01','2016-03-02');
-insert into channel_user (uid,email,name,roles,cname,ctime,ltime) values (2,'qmgeng2@126.com','qmgeng','admin','qmgeng','2016-03-01','2016-03-02');
-insert into channel_user (uid,email,name,roles,cname,ctime,ltime) values (3,'qmgeng3@126.com','qmgeng','admin,test2','qmgeng','2016-03-01','2016-03-02');
-insert into channel_user (uid,email,name,roles,cname,ctime,ltime) values (4,'qmgeng4@126.com','qmgeng','test2','qmgeng','2016-03-01','2016-03-02');
-insert into channel_user (uid,email,name,roles,cname,ctime,ltime) values (5,'qmgeng5@126.com','qmgeng','test','qmgeng','2016-03-01','2016-03-02');
-insert into channel_user (uid,email,name,roles,cname,ctime,ltime) values (10,'qmgeng@corp.netease.com','corp.netease.com','admin','qmgeng','2016-03-01','2016-03-02');
+insert into channel_user (uid,email,name,roles,proids,cname,ctime,ltime) values (1,'qmgeng1@126.com','qmgeng','root','','qmgeng','2016-03-01','2016-03-02');
+insert into channel_user (uid,email,name,roles,proids,cname,ctime,ltime) values (2,'qmgeng2@126.com','qmgeng','admin','','qmgeng','2016-03-01','2016-03-02');
+insert into channel_user (uid,email,name,roles,proids,cname,ctime,ltime) values (3,'qmgeng3@126.com','qmgeng','admin,test2','','qmgeng','2016-03-01','2016-03-02');
+insert into channel_user (uid,email,name,roles,proids,cname,ctime,ltime) values (4,'qmgeng4@126.com','qmgeng','test2','','qmgeng','2016-03-01','2016-03-02');
+insert into channel_user (uid,email,name,roles,proids,cname,ctime,ltime) values (5,'qmgeng5@126.com','qmgeng','test','','qmgeng','2016-03-01','2016-03-02');
+insert into channel_user (uid,email,name,roles,proids,cname,ctime,ltime) values (10,'qmgeng@corp.netease.com','corp.netease.com','admin','','qmgeng','2016-03-01','2016-03-02');
 update channel_user set roles='root' where email='qmgeng@corp.netease.com';
 
-drop table if exists channel_user_group;
-create table channel_user_group
-(
-  id             bigint(20) not null auto_increment comment '自增ID',
-  email          varchar(30) not null comment '用户信息',
-  gid            bigint(20) not null comment '渠道组',
-  primary key (id)
-);
+# drop table if exists channel_user_produce;
+# create table channel_user_produce
+# (
+#   id             bigint(20) not null auto_increment comment '自增ID',
+#   email          varchar(30) not null comment '用户信息',
+#   pid             varchar(16) comment '产品ID',
+#   primary key (id)
+# );
+#
+# drop table if exists channel_user_group;
+# create table channel_user_group
+# (
+#   id             bigint(20) not null auto_increment comment '自增ID',
+#   email          varchar(30) not null comment '用户信息',
+#   gid            bigint(20) not null comment '渠道组',
+#   primary key (id)
+# );
 
 
 

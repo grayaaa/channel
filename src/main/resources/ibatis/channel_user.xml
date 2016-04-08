@@ -8,6 +8,7 @@
 		<result column="email" property="email"/>
 		<result column="name" property="name"/>
 		<result column="roles" property="roles"/>
+		<result column="proids" property="proids"/>
 		<result column="cname" property="cname"/>
 		<result column="ctime" property="ctime"/>
 		<result column="ltime" property="ltime"/>

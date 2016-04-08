@@ -13,6 +13,7 @@ public class User implements Serializable {
     private String email;
     private String name;
     private String roles; //拥有的角色列表
+    private String proids;//拥有的产品列表
     private String cname;
     private Date ctime;
     private Date ltime;
@@ -24,10 +25,19 @@ public class User implements Serializable {
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", roles='" + this.getSetRoles() + '\'' +
+                ", proids='" + this.getSetProids() + '\'' +
                 ", cname='" + cname + '\'' +
                 ", ctime=" + ctime +
                 ", ltime=" + ltime +
                 '}';
+    }
+
+    public String getProids() {
+        return proids;
+    }
+
+    public void setProids(String proids) {
+        this.proids = proids;
     }
 
     public long getUserId() {
@@ -74,6 +84,10 @@ public class User implements Serializable {
 
     public Set<String> getSetRoles() {
         return Sets.newHashSet(Splitter.on(",").omitEmptyStrings().trimResults().split(this.roles));
+    }
+
+    public Set<String> getSetProids() {
+        return Sets.newHashSet(Splitter.on(",").omitEmptyStrings().trimResults().split(this.proids));
     }
 
     public Date getCtime() {
