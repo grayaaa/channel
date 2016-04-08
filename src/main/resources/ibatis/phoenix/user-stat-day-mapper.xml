@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netease.galaxy.dao.pheonix.UserStatDayDao">
+	
+	<sql id="fields">
+		 count_user,session_count,init_channel,session_time,day,count_new,app_code as app_id,channel_type,channel_group,accumulate,second_active,reduce_new,acc_reduce
+ 	</sql>
+ 	<sql id="avg_fields">
+		AVG(count_user) AS count_user,AVG(session_count)) AS session_count,AVG(session_time) AS session_time,AVG(count_new) AS count_new
+ 	</sql>
+ 	<sql id="sum_fields">
+		SUM(count_user) AS countUser,SUM(session_count) AS sessionCount,SUM(session_time) AS sessionTime,SUM(count_new) AS countNew,sum(second_active) AS secondActive,sum(accumulate) AS accumulate,sum(reduce_new) AS reduceNew,sum(acc_reduce) AS accReduce
+ 	</sql>
+	<sql id="table">
+		 PH_SDK_APP_USER_STAT_CHANNEL_DAY
+	</sql>
+	 
+	<select id="findList" resultType="UserStatDay">
+		select 
+			<include refid="fields"/>
+		from 
+			<include refid="table"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="initChannel != null">
+				and init_channel=#{initChannel}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelGroup != null">
+				and channel_group=#{channelGroup}
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<if test="channelSet != null">
+				<foreach collection="channelSet" open=" and init_channel in (" close=")" item="channel" separator=",">
+					#{channel}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+		<if test="orderColumn != null">
+			<choose>
+				<when test="isDesc">
+					order by ${orderColumn} desc 
+				</when>
+				<otherwise>
+					order by ${orderColumn} asc 
+				</otherwise>
+			</choose>
+		</if>
+		<if test="page != null">
+			limit #{page.limit}
+		</if>
+	</select>
+	
+	<select id="findGroupList" resultType="UserStatDay">
+		select 
+			<include refid="sum_fields"/>
+			<if test="groupColumn != null">
+		 		,${groupColumn}
+			</if>
+		from 
+			<include refid="table"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="initChannel != null">
+				and init_channel=#{initChannel}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelGroup != null">
+				and channel_group=#{channelGroup}
+			</if>
+			<if test="orderSumColumn != null">
+				and ${orderSumColumn} is not null
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<if test="channelSet != null">
+				<foreach collection="channelSet" open=" and init_channel in (" close=")" item="channel" separator=",">
+					#{channel}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+		<if test="groupColumn != null">
+		 	group by ${groupColumn}
+		</if>
+		<if test="orderColumn != null">
+			<choose>
+				<when test="isDesc">
+					order by ${orderColumn} desc 
+				</when>
+				<otherwise>
+					order by ${orderColumn} asc 
+				</otherwise>
+			</choose>
+		</if>
+		<if test="orderSumColumn != null">
+			<choose>
+				<when test="isDesc">
+					order by SUM(${orderSumColumn}) desc 
+				</when>
+				<otherwise>
+					order by SUM(${orderSumColumn}) asc 
+				</otherwise>
+			</choose>
+		</if>
+		<if test="page != null">
+			limit #{page.limit}
+		</if>
+	</select>
+	
+	<select id="getAvgData" resultType="hashmap">
+		select 
+			<include refid="avg_fields"/>
+		from 
+			<include refid="table"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="initChannel != null">
+				and init_channel=#{initChannel}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelGroup != null">
+				and channel_group=#{channelGroup}
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<if test="channelSet != null">
+				<foreach collection="channelSet" open=" and init_channel in (" close=")" item="channel" separator=",">
+					#{channel}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+	</select>
+	<select id="getSumData" resultType="UserStatDay">
+		select 
+			<include refid="sum_fields"/>
+		from 
+			<include refid="table"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="initChannel != null">
+				and init_channel=#{initChannel}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelGroup != null">
+				and channel_group=#{channelGroup}
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<if test="channelSet != null">
+				<foreach collection="channelSet" open=" and init_channel in (" close=")" item="channel" separator=",">
+					#{channel}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+	</select>
+	<select id="getTopNData" resultType="TopModel">
+		select 
+			${groupColumn} AS var_param,sum(${orderSumColumn}) AS nums
+		from 
+			<include refid="table"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="appVersion != null">
+				and app_version=#{appVersion}
+			</if>
+			<if test="initChannel != null">
+				and init_channel=#{initChannel}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelGroup != null">
+				and channel_group=#{channelGroup}
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<if test="channelSet != null">
+				<foreach collection="channelSet" open=" and init_channel in (" close=")" item="channel" separator=",">
+					#{channel}
+				</foreach>
+			</if>
+			and ${orderSumColumn} is not null
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+	 	group by ${groupColumn}
+		order by sum(${orderSumColumn}) desc
+		<if test="page != null">
+			limit #{page.limit}
+		</if>
+	</select>
+	
+	<!-- 没有渠道的的表，只有appid -->
+	
+	<sql id="fields_no_channel">
+		 count_user,session_count,session_time,day,count_new,app_code as app_id,accumulate,history_count
+ 	</sql>
+ 	<sql id="sum_fields_no_channel">
+		SUM(count_user) AS countUser,SUM(session_count) AS sessionCount,SUM(session_time) AS sessionTime,SUM(count_new) AS countNew,sum(accumulate) AS accumulate,SUM(history_count) AS historyCount
+ 	</sql>
+	<sql id="table_no_channel">
+		 PH_SDK_APP_USER_STAT_DAY
+	</sql>
+    <insert id="insert">
+		upsert into <include refid="table_no_channel"/>(count_user,session_count,session_time,day,count_new,app_code,accumulate,history_count)
+		values(#{countUser},#{sessionCount},#{sessionTime},#{day},#{countNew},#{appId},#{accumulate},#{historyCount})
+	</insert> 
+	<select id="findListNoChannel" resultType="UserStatDay">
+		select 
+			<include refid="fields_no_channel"/>
+		from 
+			<include refid="table_no_channel"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<if test="channelSet != null">
+				<foreach collection="channelSet" open=" and init_channel in (" close=")" item="channel" separator=",">
+					#{channel}
+				</foreach>
+			</if>
+			<if test="orderSumColumn != null">
+				and ${orderSumColumn} is not null
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+		<if test="orderColumn != null">
+			<choose>
+				<when test="isDesc">
+					order by ${orderColumn} desc 
+				</when>
+				<otherwise>
+					order by ${orderColumn} asc 
+				</otherwise>
+			</choose>
+		</if>
+		<if test="orderSumColumn != null">
+			<choose>
+				<when test="isDesc">
+					order by sum(${orderSumColumn}) desc 
+				</when>
+				<otherwise>
+					order by sum(${orderSumColumn}) asc 
+				</otherwise>
+			</choose>
+		</if>
+		<if test="page != null">
+			limit #{page.limit}
+		</if>
+	</select>
+	
+	<select id="findGroupListNoChannel" resultType="UserStatDay">
+		select 
+			<include refid="sum_fields_no_channel"/>
+			<if test="groupColumn != null">
+		 		,${groupColumn}
+			</if>
+		from 
+			<include refid="table_no_channel"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<if test="orderSumColumn != null">
+				and ${orderSumColumn} is not null
+			</if>
+			<if test="channelSet != null">
+				<foreach collection="channelSet" open=" and init_channel in (" close=")" item="channel" separator=",">
+					#{channel}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+		<if test="groupColumn != null">
+		 	group by ${groupColumn}
+		</if>
+		<if test="orderColumn != null">
+			<choose>
+				<when test="isDesc">
+					order by ${orderColumn} desc 
+				</when>
+				<otherwise>
+					order by ${orderColumn} asc 
+				</otherwise>
+			</choose>
+		</if>
+		<if test="orderSumColumn != null">
+			<choose>
+				<when test="isDesc">
+					order by SUM(${orderSumColumn}) desc 
+				</when>
+				<otherwise>
+					order by SUM(${orderSumColumn}) asc 
+				</otherwise>
+			</choose>
+		</if>
+		<if test="page != null">
+			limit #{page.limit}
+		</if>
+	</select>
+	
+	<select id="getSumDataNoChannel" resultType="UserStatDay">
+		select 
+			<include refid="sum_fields_no_channel"/>
+		from 
+			<include refid="table_no_channel"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<if test="channelSet != null">
+				<foreach collection="channelSet" open=" and init_channel in (" close=")" item="channel" separator=",">
+					#{channel}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+	</select>
+	<select id="getTopNDataNoChannel" resultType="TopModel">
+		select 
+			${groupColumn} AS var_param,sum(${orderSumColumn}) AS nums
+		from 
+			<include refid="table_no_channel"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="appVersion != null">
+				and app_version=#{appVersion}
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			and ${orderSumColumn} is not null
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+	 	group by ${groupColumn}
+		order by sum(${orderSumColumn}) desc
+		<if test="page != null">
+			limit #{page.limit}
+		</if>
+	</select>
+	
+	<!-- 按渠道类型纬度的数据 -->
+	
+	<sql id="channel_type_fields">
+		 count_user,session_count,session_time,day,count_new,app_code as app_id,channel_type,accumulate
+ 	</sql>
+ 	<sql id="avg_channel_type_fields">
+		AVG(count_user) AS count_user,AVG(session_count)) AS session_count,AVG(session_time) AS session_time,AVG(count_new) AS count_new,AVG(accumulate) AS accumulate,AVG(history_count) AS history_count
+ 	</sql>
+ 	<sql id="sum_channel_type_fields">
+		SUM(count_user) AS countUser,SUM(session_count) AS sessionCount,SUM(session_time) AS sessionTime,SUM(count_new) AS countNew,SUM(accumulate) AS accumulate,SUM(history_count) AS historyCount
+ 	</sql>
+	<sql id="channel_type_table">
+		 PH_SDK_APP_USER_CHANNEL_TYPE_DAY
+	</sql>
+    <insert id="insertChannelType">
+		upsert into <include refid="channel_type_table"/>(count_user,session_count,session_time,day,count_new,app_code,accumulate,channel_type)
+		values(#{countUser},#{sessionCount},#{sessionTime},#{day},#{countNew},#{appId},#{accumulate},#{channelType})
+	</insert> 
+	
+	<select id="findListChannelType" resultType="UserStatDay">
+		select 
+			<include refid="channel_type_fields"/>
+		from 
+			<include refid="channel_type_table"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelTypes != null">
+				<foreach collection="channelTypes" open=" and channel_type in (" close=")" item="ct" separator=",">
+					#{ct}
+				</foreach>
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+		<if test="orderColumn != null">
+			<choose>
+				<when test="isDesc">
+					order by ${orderColumn} desc 
+				</when>
+				<otherwise>
+					order by ${orderColumn} asc 
+				</otherwise>
+			</choose>
+		</if>
+		<if test="page != null">
+			limit #{page.limit}
+		</if>
+	</select>
+	
+	<select id="findGroupListChannelType" resultType="UserStatDay">
+		select 
+			<include refid="sum_channel_type_fields"/>
+			<if test="groupColumn != null">
+		 		,${groupColumn}
+			</if>
+		from 
+			<include refid="channel_type_table"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelTypes != null">
+				<foreach collection="channelTypes" open=" and channel_type in (" close=")" item="ct" separator=",">
+					#{ct}
+				</foreach>
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+		<if test="groupColumn != null">
+		 	group by ${groupColumn}
+		</if>
+		<if test="orderColumn != null">
+			<choose>
+				<when test="isDesc">
+					order by ${orderColumn} desc 
+				</when>
+				<otherwise>
+					order by ${orderColumn} asc 
+				</otherwise>
+			</choose>
+		</if>
+		<if test="orderSumColumn != null">
+			<choose>
+				<when test="isDesc">
+					order by SUM(${orderSumColumn}) desc 
+				</when>
+				<otherwise>
+					order by SUM(${orderSumColumn}) asc 
+				</otherwise>
+			</choose>
+		</if>
+		<if test="page != null">
+			limit #{page.limit}
+		</if>
+	</select>
+	
+	<select id="getAvgDataChannelType" resultType="hashmap">
+		select 
+			<include refid="avg_channel_type_fields"/>
+		from 
+			<include refid="channel_type_table"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelTypes != null">
+				<foreach collection="channelTypes" open=" and channel_type in (" close=")" item="ct" separator=",">
+					#{ct}
+				</foreach>
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+	</select>
+	<select id="getSumDataChannelType" resultType="UserStatDay">
+		select 
+			<include refid="sum_channel_type_fields"/>
+		from 
+			<include refid="channel_type_table"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelTypes != null">
+				<foreach collection="channelTypes" open=" and channel_type in (" close=")" item="ct" separator=",">
+					#{ct}
+				</foreach>
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+	</select>
+	<select id="getTopNDataChannelType" resultType="TopModel">
+		select 
+			${groupColumn} AS var_param,sum(${orderSumColumn}) AS nums
+		from 
+			<include refid="channel_type_table"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="appVersion != null">
+				and app_version=#{appVersion}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelTypes != null">
+				<foreach collection="channelTypes" open=" and channel_type in (" close=")" item="ct" separator=",">
+					#{ct}
+				</foreach>
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			and ${orderSumColumn} is not null
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+	 	group by ${groupColumn}
+		order by sum(${orderSumColumn}) desc
+		<if test="page != null">
+			limit #{page.limit}
+		</if>
+	</select>
+	<!--按channelGroup统计的表  -->
+	
+	<sql id="fields_channelGroup">
+		 count_user,session_count,session_time,day,count_new,app_code as app_id,channel_type,channel_group,accumulate,second_active
+ 	</sql>
+ 	<sql id="avg_fields_channelGroup">
+		AVG(count_user) AS count_user,AVG(session_count)) AS session_count,AVG(session_time) AS session_time,AVG(count_new) AS count_new
+ 	</sql>
+ 	<sql id="sum_fields_channelGroup">
+		SUM(count_user) AS countUser,SUM(session_count) AS sessionCount,SUM(session_time) AS sessionTime,SUM(count_new) AS countNew,sum(second_active) AS secondActive,sum(accumulate) AS accumulate 
+ 	</sql>
+	<sql id="table_channelGroup">
+		 PH_SDK_APP_USER_STAT_CHANNEL_GROUP_DAY
+	</sql>
+	<select id="findListChannelGroup" resultType="UserStatDay">
+		select 
+			<include refid="fields_channelGroup"/>
+		from 
+			<include refid="table_channelGroup"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="initChannel != null">
+				and init_channel=#{initChannel}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelGroup != null">
+				and channel_group=#{channelGroup}
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<if test="channelSet != null">
+				<foreach collection="channelSet" open=" and init_channel in (" close=")" item="channel" separator=",">
+					#{channel}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+		<if test="orderColumn != null">
+			<choose>
+				<when test="isDesc">
+					order by ${orderColumn} desc 
+				</when>
+				<otherwise>
+					order by ${orderColumn} asc 
+				</otherwise>
+			</choose>
+		</if>
+		<if test="page != null">
+			limit #{page.limit}
+		</if>
+	</select>
+	
+	<select id="findGroupListChannelGroup" resultType="UserStatDay">
+		select 
+			<include refid="sum_fields_channelGroup"/>
+			<if test="groupColumn != null">
+		 		,${groupColumn}
+			</if>
+		from 
+			<include refid="table_channelGroup"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="initChannel != null">
+				and init_channel=#{initChannel}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelGroup != null">
+				and channel_group=#{channelGroup}
+			</if>
+			<if test="orderSumColumn != null">
+				and ${orderSumColumn} is not null
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<if test="channelSet != null">
+				<foreach collection="channelSet" open=" and init_channel in (" close=")" item="channel" separator=",">
+					#{channel}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+		<if test="groupColumn != null">
+		 	group by ${groupColumn}
+		</if>
+		<if test="orderColumn != null">
+			<choose>
+				<when test="isDesc">
+					order by ${orderColumn} desc 
+				</when>
+				<otherwise>
+					order by ${orderColumn} asc 
+				</otherwise>
+			</choose>
+		</if>
+		<if test="orderSumColumn != null">
+			<choose>
+				<when test="isDesc">
+					order by SUM(${orderSumColumn}) desc 
+				</when>
+				<otherwise>
+					order by SUM(${orderSumColumn}) asc 
+				</otherwise>
+			</choose>
+		</if>
+		<if test="page != null">
+			limit #{page.limit}
+		</if>
+	</select>
+	
+	<select id="getAvgDataChannelGroup" resultType="hashmap">
+		select 
+			<include refid="avg_fields_channelGroup"/>
+		from 
+			<include refid="table_channelGroup"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="initChannel != null">
+				and init_channel=#{initChannel}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelGroup != null">
+				and channel_group=#{channelGroup}
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<if test="channelSet != null">
+				<foreach collection="channelSet" open=" and init_channel in (" close=")" item="channel" separator=",">
+					#{channel}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+	</select>
+	<select id="getSumDataChannelGroup" resultType="UserStatDay">
+		select 
+			<include refid="sum_fields_channelGroup"/>
+		from 
+			<include refid="table_channelGroup"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="initChannel != null">
+				and init_channel=#{initChannel}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelGroup != null">
+				and channel_group=#{channelGroup}
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<if test="channelSet != null">
+				<foreach collection="channelSet" open=" and init_channel in (" close=")" item="channel" separator=",">
+					#{channel}
+				</foreach>
+			</if>
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+	</select>
+	<select id="getTopNDataChannelGroup" resultType="TopModel">
+		select 
+			${groupColumn} AS var_param,sum(${orderSumColumn}) AS nums
+		from 
+			<include refid="table_channelGroup"/> 
+		<where>
+			<if test="appId != null">
+				app_code=#{appId}
+			</if>
+			<if test="appVersion != null">
+				and app_version=#{appVersion}
+			</if>
+			<if test="initChannel != null">
+				and init_channel=#{initChannel}
+			</if>
+			<if test="channelType != null">
+				and channel_type=#{channelType}
+			</if>
+			<if test="channelGroup != null">
+				and channel_group=#{channelGroup}
+			</if>
+			<if test="appIdSet != null">
+				<foreach collection="appIdSet" open=" and app_code in (" close=")" item="appid" separator=",">
+					#{appid}
+				</foreach>
+			</if>
+			<if test="channelSet != null">
+				<foreach collection="channelSet" open=" and init_channel in (" close=")" item="channel" separator=",">
+					#{channel}
+				</foreach>
+			</if>
+			and ${orderSumColumn} is not null
+			<![CDATA[
+			  and day >= #{startLongDay} and day <= #{endLongDay}  
+				]]>
+		</where>
+	 	group by ${groupColumn}
+		order by sum(${orderSumColumn}) desc
+		<if test="page != null">
+			limit #{page.limit}
+		</if>
+	</select>
+</mapper>

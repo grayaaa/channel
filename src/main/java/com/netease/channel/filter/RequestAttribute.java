@@ -1,4 +1,3 @@
-
 package com.netease.channel.filter;
 
 import java.lang.annotation.*;
@@ -11,11 +10,11 @@ import java.lang.annotation.*;
 @Documented
 public @interface RequestAttribute {
 
-	/**
-	 * The request parameter to bind to.
-	 */
-	String value() ;
+    /**
+     * The request parameter to bind to.
+     */
+    String value();
 
-	boolean required() default true;//non-use
-	
+    boolean required() default true;//non-use
+
 }

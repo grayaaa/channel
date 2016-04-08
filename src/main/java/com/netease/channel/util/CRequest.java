@@ -80,7 +80,7 @@ public class CRequest {
             //解析出键值
             if (arrSplitEqual.length > 1) {
                 //正确解析
-                mapRequest.put(arrSplitEqual[0], strSplit.substring(arrSplitEqual[0].length()+1,strSplit.length()));
+                mapRequest.put(arrSplitEqual[0], strSplit.substring(arrSplitEqual[0].length() + 1, strSplit.length()));
 
             } else {
                 if (arrSplitEqual[0] != "") {

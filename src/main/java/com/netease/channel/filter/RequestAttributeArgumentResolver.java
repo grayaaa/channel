@@ -44,7 +44,7 @@ public class RequestAttributeArgumentResolver extends BaseAttributeArgumentResol
             } else if (int.class == parameterType) {
                 return 0;
             } else if (byte.class == parameterType) {
-                return (byte)0;
+                return (byte) 0;
             } else if (char.class == parameterType) {
                 return '\0';
             } else if (float.class == parameterType) {
@@ -52,7 +52,7 @@ public class RequestAttributeArgumentResolver extends BaseAttributeArgumentResol
             } else if (double.class == parameterType) {
                 return 0D;
             } else if (short.class == parameterType) {
-                return (short)0;
+                return (short) 0;
             } else if (boolean.class == parameterType) {
                 return false;
             }

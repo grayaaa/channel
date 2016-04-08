@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//ibatis.apache.org//DTD Config 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-config.dtd">
+<configuration>
+	<settings><!--数据库加"_"字段,自动转换为驼峰式。例如:"user_id"转化为"userId" -->
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+	</settings>
+	<typeAliases>
+		<typeAlias type="com.netease.galaxy.model.pheonix.UserStatHour"
+			alias="UserStatHour" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.UserStatDay"
+			alias="UserStatDay" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.UserStatMonth"
+			alias="UserStatMonth" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.UserStatWeek"
+			alias="UserStatWeek" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.UserOSStatDay"
+			alias="UserOSStatDay" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.UserAreaStatDay"
+			alias="UserAreaStatDay" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.UserVersionStatDay"
+			alias="UserVersionStatDay" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.TopModel"
+			alias="TopModel" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.UserLeftDay"
+			alias="UserLeftDay" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.UserLeftMonth"
+			alias="UserLeftMonth" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.UserLeftWeek"
+			alias="UserLeftWeek" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.UserDeviceModelStatDay"
+			alias="UserDeviceModelStatDay" />
+		<typeAlias
+			type="com.netease.galaxy.model.pheonix.UserDeviceResolutionStatDay"
+			alias="UserDeviceResolutionStatDay" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.UserDeviceNetTypeStatDay"
+			alias="UserDeviceNetTypeStatDay" />
+		<typeAlias
+			type="com.netease.galaxy.model.pheonix.UserDeviceOperatorStatDay"
+			alias="UserDeviceOperatorStatDay" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.AppEventPvUv"
+			alias="AppEventPvUv" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.AppFaultDay"
+			alias="AppFaultDay" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.AppFaultSummeryDay"
+			alias="AppFaultSummeryDay" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.AppArticleStat"
+			alias="AppArticleStat" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.ArticleHouseDay"
+			alias="ArticleHouseDay" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.ArticleSort"
+			alias="ArticleSort" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.ArticleRead"
+			alias="ArticleRead" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.CommentPvUv"
+			alias="CommentPvUv" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.OriginalArticlePvUv"
+			alias="OriginalArticlePvUv" />	
+		<typeAlias type="com.netease.galaxy.model.pheonix.OriginalShareCount"
+			alias="OriginalShareCount" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.ArticleColumnCount"
+			alias="ArticleColumnCount" />	
+		<typeAlias type="com.netease.galaxy.model.pheonix.OriginalArticleDetail"
+			alias="OriginalArticleDetail" />
+		<typeAlias type="com.netease.galaxy.model.pheonix.AppArticleColumnStat"
+			alias="AppArticleColumnStat" />	
+		<typeAlias type="com.netease.galaxy.model.pheonix.WakeUpUser"
+			alias="WakeUpUser" />
+	</typeAliases>
+	<mappers>
+		<mapper resource="mybatis/pheonix/user-stat-hour-mapper.xml" />
+		<mapper resource="mybatis/pheonix/user-stat-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/user-stat-week-mapper.xml" />
+		<mapper resource="mybatis/pheonix/user-stat-month-mapper.xml" />
+		<mapper resource="mybatis/pheonix/user-os-stat-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/user-area-stat-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/user-version-stat-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/user-left-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/user-left-month-mapper.xml" />
+		<mapper resource="mybatis/pheonix/user-left-week-mapper.xml" />
+		<mapper resource="mybatis/pheonix/user-device-operator-stat-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/user-device-resolution-stat-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/user-device-nettype-stat-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/user-device-model-stat-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/app-event-tag-pv-uv-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/app-fault-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/table-check-mapper.xml" />
+		<mapper resource="mybatis/pheonix/app-article-stat-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/article-house-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/article-sort-mapper.xml" />
+		<mapper resource="mybatis/pheonix/article-read-mapper.xml" />
+		<mapper resource="mybatis/pheonix/comment-pv-uv-mapper.xml" />
+		<mapper resource="mybatis/pheonix/original-article-pv-uv-mapper.xml"/>
+		<mapper resource="mybatis/pheonix/original-share-count-mapper.xml"/>
+		<mapper resource="mybatis/pheonix/article-column-count-mapper.xml"/>
+		<mapper resource="mybatis/pheonix/original-article-detail-mapper.xml"/>
+		<mapper resource="mybatis/pheonix/app-article-column-stat-day-mapper.xml" />
+		<mapper resource="mybatis/pheonix/wake-up-user-day-mapper.xml"/> 
+	</mappers>
+</configuration>

@@ -12,35 +12,43 @@ import java.util.UUID;
 
 /**
  * Generate ids
- * 
+ *
  * @author
  */
 public class IdUtils {
 
     public static final String seed = "http://vshow.com/";
+    private static final ThreadLocal<MessageDigest> DIGESTER_CONTEXT = new ThreadLocal<MessageDigest>() {
+        protected synchronized MessageDigest initialValue() {
+            try {
+                return MessageDigest.getInstance("MD5");
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    };
 
     /**
      * Generator a user id by user`s email.
-     * 
+     *
      * @param email
      * @return
      */
     public static long generateUserId(String email) {
         return genID(email);
     }
-    
+
     public static long generateRechargeId(long userId) {
         return genID(seed + userId + "/recharge/" + UUID.randomUUID().toString());
     }
-    
-    
+
     public static long generatePayCashConfigId() {
         return genID(seed + "/payCashConfig/" + UUID.randomUUID().toString());
     }
-    
+
     /**
      * Generate a id from a string value using MD5 digest algorithm
-     * 
+     *
      * @param str
      * @return
      */
@@ -51,7 +59,7 @@ public class IdUtils {
 
     /**
      * return a digest value which is half the length of a MD5 digest value.
-     * 
+     *
      * @param data
      * @param start
      * @param len
@@ -64,16 +72,6 @@ public class IdUtils {
                 | ((long) (digest[5] & 0xFF) << 16) | ((long) (digest[6] & 0xFF) << 8) | ((long) digest[7] & 0xFF));
     }
 
-    private static final ThreadLocal<MessageDigest> DIGESTER_CONTEXT = new ThreadLocal<MessageDigest>() {
-        protected synchronized MessageDigest initialValue() {
-            try {
-                return MessageDigest.getInstance("MD5");
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    };
-
     /**
      * Construct a hash value for a byte array.
      */
@@ -83,11 +81,10 @@ public class IdUtils {
         return digester.digest();
     }
 
-    
 
     /**
      * Convert <code>s</code> to a UTF8 Sequence.
-     * 
+     *
      * @param s
      * @return
      */
@@ -112,9 +109,9 @@ public class IdUtils {
 
     /**
      * 将字符串转化成为UTF-8的表示，保存在bytes从offset开始的空间内. 需要注意的是，这个方法没有做range check，所以希望给出的bytes留下 足够的空间.
-     * 
-     * @param s String to be encoded
-     * @param bytes Buffer to store encoded result
+     *
+     * @param s      String to be encoded
+     * @param bytes  Buffer to store encoded result
      * @param offset Start of the buffer to store the result
      * @return 实际编码后的字节数，
      */
@@ -150,20 +147,21 @@ public class IdUtils {
 
     /**
      * 随机生成20位订单号，订单格式为年月日时分秒毫秒+三位随机字符串，随机字符串由0-9
+     *
      * @param length
      * @return
      */
     public static long generateOrderId() {
         int i;
-        int count = 0; 
-        char[] str = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        int count = 0;
+        char[] str = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
         StringBuffer buf = new StringBuffer("");
         long currentTime = System.currentTimeMillis();
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(currentTime);
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         buf.append(df.format(cal.getTime()));
-        Random  rand = new Random(currentTime);
+        Random rand = new Random(currentTime);
         while (count < 2) {
             i = Math.abs(rand.nextInt(str.length));
             if (i >= 0 && i < str.length) {
@@ -171,14 +169,12 @@ public class IdUtils {
                 count++;
             }
         }
-        return  (Long)ConvertUtils.convert(buf.toString(), Long.class);
+        return (Long) ConvertUtils.convert(buf.toString(), Long.class);
     }
-    
-    
-     
-     
-     public static void main(String[] args) {
-         System.out.println(generateUserId("sytang@corp.netease.com"));
-     }
-     
+
+
+    public static void main(String[] args) {
+        System.out.println(generateUserId("sytang@corp.netease.com"));
+    }
+
 }

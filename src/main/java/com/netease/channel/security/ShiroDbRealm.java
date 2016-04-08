@@ -28,16 +28,24 @@ public class ShiroDbRealm extends AuthorizingRealm {
             PrincipalCollection principals) {
         if (principals == null) {
             throw new AuthorizationException("参数不能为空");
-        }
-        User user = (User) getAvailablePrincipal(principals);
-        user = userService.getUserByEmail(user.getEmail());
-        logger.info("login user-->" + user.toString());
 
+        }
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-        Set<String> permissions = userService.getPermissionsByUser(user);
-        logger.info("permissions-->" + permissions.toString());
-        authorizationInfo.setRoles(user.getSetRoles());
-        authorizationInfo.setStringPermissions(permissions);
+        try {
+            User user = (User) getAvailablePrincipal(principals);
+            logger.debug("test");
+            user = userService.getUserByEmail(user.getEmail());
+            logger.info("login user-->" + user.toString());
+
+
+            Set<String> permissions = userService.getPermissionsByUser(user);
+            logger.info("permissions-->" + permissions.toString());
+            authorizationInfo.setRoles(user.getSetRoles());
+            authorizationInfo.setStringPermissions(permissions);
+        } catch (Exception a) {
+
+        }
+
 
         return authorizationInfo;
     }

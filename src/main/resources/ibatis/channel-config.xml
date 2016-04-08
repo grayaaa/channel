@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings><!--数据库加"_"字段,自动转换为驼峰式。例如:"user_id"转化为"userId" -->
+        <setting name="mapUnderscoreToCamelCase" value="true" />
+    </settings>
+    <typeAliases>
+        <typeAlias type="com.netease.channel.entity.User" alias="User"/>
+        <typeAlias type="com.netease.channel.entity.Role" alias="Role"/>
+        <typeAlias type="com.netease.channel.entity.ChannelGroup" alias="ChannelGroup"/>
+        <typeAlias type="com.netease.channel.entity.ChannelAnalysis" alias="ChannelAnalysis"/>
+    </typeAliases>
+</configuration>

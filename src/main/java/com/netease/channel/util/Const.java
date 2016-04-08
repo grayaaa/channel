@@ -8,43 +8,22 @@ import java.util.Map;
  * 常量区
  */
 public class Const {
-	
-	public static final String LOGIN_USER = "login_user";
-	
-	public static final String CHANNEL = "channel";
-	
-	public static final Map<String, String> settlementMap = new HashMap<String,String>(){
-	        {   
+
+    public static final String LOGIN_USER = "login_user";
+
+    public static final String CHANNEL = "channel";
+
+    public static final Map<String, String> settlementMap = new HashMap<String, String>() {
+        {
             put("PV", "");
             put("UV", "");
             put("注册数", "channel_register.register_number");
             put("登陆人数", "");
             put("充值金额", "channel_recharge.recharge_money");
-            }
-	};
-	
-	//请求错误码
-    public static enum ErrorCode {
-        SUCCESS(1),
-        FAILED(0),
-        CAPTCHA(-1),
-        CAPTCHA_WRONG(-2),
-        WORLD_FORBIDDEN(2),
-        ILLEGAL_ARGUMENT(400),
-        FORBIDDEN(403),
-        SERVER_ERROR(501);
-        
-        private int value;
-        private ErrorCode(int value) {
-            this.value = value;
         }
-        public int intValue() {
-            return this.value;
-        }
-    }
-    
+    };
     //页面请求参数
-    public static String PARAM_PAGE_NO ="pageNo";
+    public static String PARAM_PAGE_NO = "pageNo";
     public static String PARAM_PAGE_SIZE = "pageSize";
     public static String PARAM_PAGE_DATE = "pageDate";
     public static String PARAM_PAGE_START_DATE = "pageStartDate";
@@ -79,9 +58,28 @@ public class Const {
     public static String PARAM_SUBMIT_PERSON = "submitPerson";
     //提交时间
     public static String PARAM_SUBMIT_TIME = "submitTime";
-    
-    
-    public static int PAGE_NO =1;
+    public static int PAGE_NO = 1;
     public static int PAGE_SIZE = 20;
-    
+    //请求错误码
+    public static enum ErrorCode {
+        SUCCESS(1),
+        FAILED(0),
+        CAPTCHA(-1),
+        CAPTCHA_WRONG(-2),
+        WORLD_FORBIDDEN(2),
+        ILLEGAL_ARGUMENT(400),
+        FORBIDDEN(403),
+        SERVER_ERROR(501);
+
+        private int value;
+
+        private ErrorCode(int value) {
+            this.value = value;
+        }
+
+        public int intValue() {
+            return this.value;
+        }
+    }
+
 }

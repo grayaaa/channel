@@ -15,53 +15,79 @@
     
     <!-- 读取JDBC配置文件 -->
     <context:property-placeholder location="classpath:jdbc.${profiles.active}.properties" ignore-unresolvable="true"/>
-    
-   	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-        destroy-method="close">
+
+    <!-- mysql数据源 -->
+   	<bean id="mysqlDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close">
         <property name="driverClass">
-            <value>${jdbc.driver}</value>
+            <value>${mysql.jdbc.driver}</value>
         </property>
         <property name="jdbcUrl">
-            <value>${jdbc.url}</value>
+            <value>${mysql.jdbc.url}</value>
         </property>
         <property name="user">
-            <value>${jdbc.username}</value>
+            <value>${mysql.jdbc.username}</value>
         </property>
         <property name="password">
-            <value>${jdbc.password}</value>
+            <value>${mysql.jdbc.password}</value>
         </property>
         <property name="maxIdleTime">
-            <value>${jdbc.maxIdleTime}</value>
+            <value>${mysql.jdbc.maxIdleTime}</value>
         </property>
         <property name="testConnectionOnCheckin">
-            <value>${jdbc.testConnectionOnCheckin}</value>
+            <value>${mysql.jdbc.testConnectionOnCheckin}</value>
         </property>
         <property name="preferredTestQuery">
-        	<value>${jdbc.preferredTestQuery}</value>
+        	<value>${mysql.jdbc.preferredTestQuery}</value>
         </property>
         <property name="idleConnectionTestPeriod">
-            <value>${jdbc.idleConnectionTestPeriod}</value>
+            <value>${mysql.jdbc.idleConnectionTestPeriod}</value>
         </property>
         <property name="minPoolSize">
-            <value>${jdbc.minPoolSize}</value>
+            <value>${mysql.jdbc.minPoolSize}</value>
         </property>
         <property name="maxPoolSize">
-            <value>${jdbc.maxPoolSize}</value>
+            <value>${mysql.jdbc.maxPoolSize}</value>
         </property>
     </bean>
-    
-    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="mapperLocations" value="classpath*:ibatis/**/*.xml" />
-	</bean>
-	
-    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
-		<constructor-arg index="0" ref="sqlSessionFactory" />
-	</bean>
+    <bean id="mysqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="mysqlDataSource" />
+        <property name="configLocation" value="classpath:ibatis/channel-config.xml" />
+        <property name="mapperLocations" value="classpath:ibatis/mysql/*.xml" />
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.netease.channel.dao" />
+        <property name="sqlSessionFactoryBeanName" value="mysqlSessionFactory" />
+    </bean>
+
+    <!--&lt;!&ndash; pheonix数据源 &ndash;&gt;-->
+    <!--<bean id="pheonixDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">-->
+        <!--<property name="jdbcUrl" value="${pheonix.jdbc.jdbcUrl}" />-->
+        <!--<property name="driverClass" value="${pheonix.jdbc.Driver}" />-->
+        <!--<property name="maxPoolSize" value="${pheonix.jdbc.maxPoolSize}" />-->
+        <!--<property name="minPoolSize" value="${pheonix.jdbc.minPoolSize}" />-->
+        <!--<property name="initialPoolSize" value="${pheonix.jdbc.initialPoolSize}" />-->
+        <!--<property name="acquireIncrement" value="${pheonix.jdbc.acquireIncrement}" />-->
+        <!--<property name="maxIdleTime" value="${pheonix.jdbc.maxIdleTime}" />-->
+        <!--<property name="idleConnectionTestPeriod" value="${pheonix.jdbc.idleConnectionTestPeriod}" />-->
+    <!--</bean>-->
+    <!--&lt;!&ndash; 配置SqlSessionFactoryBean &ndash;&gt;-->
+    <!--<bean id="pheonixSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">-->
+        <!--<property name="dataSource" ref="pheonixDataSource"/>-->
+        <!--<property name="configLocation" value="classpath:phoenix-mybatis.xml"/>-->
+    <!--</bean>-->
+    <!--&lt;!&ndash; mybatis托管spring加载Dao &ndash;&gt;-->
+    <!--<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">-->
+        <!--<property name="basePackage" value="com.netease.galaxy.dao.pheonix" />-->
+        <!--<property name="annotationClass" value="com.netease.galaxy.annotation.PheonixMapper" />-->
+        <!--<property name="sqlSessionFactoryBeanName" value="pheonixSqlSessionFactory" />-->
+    <!--</bean>-->
+
+
 
     <!-- datasource 事务-->
     <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-    	<constructor-arg ref="dataSource"/>
+    	<constructor-arg ref="mysqlDataSource"/>
     </bean>
     
     <tx:annotation-driven transaction-manager="txManager" />

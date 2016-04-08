@@ -4,7 +4,6 @@ import com.netease.channel.dao.GroupDao;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -18,7 +17,7 @@ public class HomeController {
     private static final Log logger = LogFactory.getLog(HomeController.class);
 
     @Resource
-    GroupDao groupDao ;
+    GroupDao groupDao;
 
     @RequestMapping(value = "/dashboard.do")
     public String dashboard(
@@ -32,7 +31,6 @@ public class HomeController {
     @RequestMapping(value = "/")
     public String home(HttpServletRequest request, HttpServletResponse response) {
 
-        System.out.println(groupDao.getNextID("channel_group"));
         return "home";
     }
 

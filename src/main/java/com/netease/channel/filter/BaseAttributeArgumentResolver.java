@@ -9,7 +9,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import java.lang.annotation.Annotation;
 
 /**
- * 
+ *
  */
 public abstract class BaseAttributeArgumentResolver implements WebArgumentResolver {
     private static final Logger logger = LoggerFactory.getLogger(BaseAttributeArgumentResolver.class);
@@ -23,10 +23,10 @@ public abstract class BaseAttributeArgumentResolver implements WebArgumentResolv
         Object paramAnn = null;
 
         Annotation[] paramAnns = null;
-        
+
         paramAnns = methodParameter.getParameterAnnotations();
-        logger.debug("methodParameter.info:{},{},{}", new Object[] { parameterName,
-                methodParameter.getParameterIndex(), parameterType });
+        logger.debug("methodParameter.info:{},{},{}", new Object[]{parameterName,
+                methodParameter.getParameterIndex(), parameterType});
         for (int j = 0; j < paramAnns.length; j++) {
             paramAnn = paramAnns[j];
             attributeName = getAttribute(paramAnn);
@@ -44,27 +44,29 @@ public abstract class BaseAttributeArgumentResolver implements WebArgumentResolv
         if (paramAnn != null) {
             checkValue(defaultValue, paramAnn);
         }
-        logger.debug("{},{},{}",new Object[]{parameterName,value,defaultValue});
+        logger.debug("{},{},{}", new Object[]{parameterName, value, defaultValue});
         return defaultValue;
     }
 
     /**
      * Can be used to validate value based on annotation contents. For example, to check if value is required
-     * 
-     * @param value the value returned from the request
+     *
+     * @param value    the value returned from the request
      * @param paramAnn matched annotation
      */
     protected void checkValue(Object value, Object paramAnn) {
     }
 
     protected abstract Object getValue(NativeWebRequest webRequest, String attributeName);
+
     /**
-     * if the parameter.oriValue is null and the the parameter.type is primative, just return the primative value 
+     * if the parameter.oriValue is null and the the parameter.type is primative, just return the primative value
+     *
      * @param oriValue
      * @param parameterType
      * @return
      */
-    protected Object defaultValue(Object oriValue, Class<?> parameterType){
+    protected Object defaultValue(Object oriValue, Class<?> parameterType) {
         return oriValue;
     }
 

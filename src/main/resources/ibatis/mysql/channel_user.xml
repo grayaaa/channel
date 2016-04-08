@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.netease.channel.dao.UserDao">
+
+    <select id="getUserList" resultType="User" >
+        select uid,email,name,roles,proids,cname,ctime,ltime from channel_user ORDER BY uid ASC
+    </select>
+	
+	<select id="getUserByEmail" resultType="User" parameterType="map">
+		select uid,email,name,roles,proids,cname,ctime,ltime from channel_user where email=#{email}
+	</select>
+
+    <insert id="addUser" parameterType="map" >
+        insert into channel_user(email,name,roles,cname,ctime,ltime) values(#{email},#{name},#{roles},#{cname},#{ctime},#{ltime})
+    </insert>
+
+    <select id="getRoleList" resultType="Role" >
+        select rid,role,description,permissions,available from channel_role ORDER BY rid ASC
+    </select>
+
+    <select id="getRoleByName" resultType="Role" parameterType="map" >
+        select rid,role,description,permissions,available from channel_role where role=#{role}
+    </select>
+
+    <insert id="addRole" parameterType="map">
+        insert into channel_role(role,description,permissions,available) values(#{role},#{description},#{permissions},#{available})
+    </insert>
+
+    <delete id="deleteUser" parameterType="map">
+        delete from channel_user where email = #{email}
+    </delete>
+
+    <delete id="deleteRole" parameterType="map">
+        delete from channel_role where role = #{role}
+    </delete>
+
+</mapper>

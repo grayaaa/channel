@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 public interface UserService {
-	
-	public User getUserByEmail(String email);
+
+    public User getUserByEmail(String email);
 
     public List<User> getUserList();
 
@@ -27,5 +27,5 @@ public interface UserService {
     public void deleteUser(String email);
 
     public void deleteRole(String role);
-	
+
 }

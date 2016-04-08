@@ -52,12 +52,12 @@ public class Role implements Serializable {
         return permissions;
     }
 
-    public Set<String> getSetPermissions() {
-        return Sets.newHashSet(Splitter.on(",").omitEmptyStrings().trimResults().split(this.permissions));
-    }
-
     public void setPermissions(String permissions) {
         this.permissions = permissions;
+    }
+
+    public Set<String> getSetPermissions() {
+        return Sets.newHashSet(Splitter.on(",").omitEmptyStrings().trimResults().split(this.permissions));
     }
 
     public Boolean getAvailable() {

@@ -55,24 +55,24 @@ import java.util.List;
  * HTTP工具类
  */
 public class HttpClientUtil {
-	
-	private static final Log logger = LogFactory.getLog(HttpClientUtil.class);
-	
-	private static final int socketTimeoutTime = 5000;
-	private static final int connectTimeoutTime = 5000;
-	private static final int connectionRequestTimeoutTime = 5000;
-	private static HttpClientUtil httpClientUtil = new HttpClientUtil();
-	
-	private CloseableHttpClient httpclient;
-	
-	public HttpClientUtil() {
-		// Use custom message parser / writer to customize the way HTTP
+
+    private static final Log logger = LogFactory.getLog(HttpClientUtil.class);
+
+    private static final int socketTimeoutTime = 5000;
+    private static final int connectTimeoutTime = 5000;
+    private static final int connectionRequestTimeoutTime = 5000;
+    private static HttpClientUtil httpClientUtil = new HttpClientUtil();
+
+    private CloseableHttpClient httpclient;
+
+    public HttpClientUtil() {
+        // Use custom message parser / writer to customize the way HTTP
         // messages are parsed from and written out to the data stream.
         HttpMessageParserFactory<HttpResponse> responseParserFactory = new DefaultHttpResponseParserFactory() {
 
             @Override
             public HttpMessageParser<HttpResponse> create(
-                SessionInputBuffer buffer, MessageConstraints constraints) {
+                    SessionInputBuffer buffer, MessageConstraints constraints) {
                 LineParser lineParser = new BasicLineParser() {
 
                     @Override
@@ -86,7 +86,7 @@ public class HttpClientUtil {
 
                 };
                 return new DefaultHttpResponseParser(
-                    buffer, lineParser, DefaultHttpResponseFactory.INSTANCE, constraints) {
+                        buffer, lineParser, DefaultHttpResponseFactory.INSTANCE, constraints) {
 
                     @Override
                     protected boolean reject(final CharArrayBuffer line, int count) {
@@ -98,8 +98,8 @@ public class HttpClientUtil {
             }
 
         };
-		
-		HttpMessageWriterFactory<HttpRequest> requestWriterFactory = new DefaultHttpRequestWriterFactory();
+
+        HttpMessageWriterFactory<HttpRequest> requestWriterFactory = new DefaultHttpRequestWriterFactory();
 
         // Use a custom connection factory to customize the process of
         // initialization of outgoing HTTP connections. Beside standard connection
@@ -107,82 +107,100 @@ public class HttpClientUtil {
         // parser / writer routines to be employed by individual connections.
         HttpConnectionFactory<HttpRoute, ManagedHttpClientConnection> connFactory = new ManagedHttpClientConnectionFactory(
                 requestWriterFactory, responseParserFactory);
-		
-		SSLContext sslcontext = SSLContexts.createSystemDefault();
-	    // Use custom hostname verifier to customize SSL hostname verification.
-	    X509HostnameVerifier hostnameVerifier = new BrowserCompatHostnameVerifier();
-		
-		Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-	            .register("http", PlainConnectionSocketFactory.INSTANCE)
-	            .register("https", new SSLConnectionSocketFactory(sslcontext, hostnameVerifier))
-	            .build();
-		
-		 // Use custom DNS resolver to override the system DNS resolution.
+
+        SSLContext sslcontext = SSLContexts.createSystemDefault();
+        // Use custom hostname verifier to customize SSL hostname verification.
+        X509HostnameVerifier hostnameVerifier = new BrowserCompatHostnameVerifier();
+
+        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", PlainConnectionSocketFactory.INSTANCE)
+                .register("https", new SSLConnectionSocketFactory(sslcontext, hostnameVerifier))
+                .build();
+
+        // Use custom DNS resolver to override the system DNS resolution.
         DnsResolver dnsResolver = new SystemDefaultDnsResolver() {
 
             @Override
             public InetAddress[] resolve(final String host) throws UnknownHostException {
                 if (host.equalsIgnoreCase("myhost")) {
-                    return new InetAddress[] { InetAddress.getByAddress(new byte[] {127, 0, 0, 1}) };
+                    return new InetAddress[]{InetAddress.getByAddress(new byte[]{127, 0, 0, 1})};
                 } else {
                     return super.resolve(host);
                 }
             }
 
         };
-		
+
         // Use custom cookie store if necessary.
         CookieStore cookieStore = new BasicCookieStore();
         // Use custom credentials provider if necessary.
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         // Create global request configuration
         RequestConfig defaultRequestConfig = RequestConfig.custom()
-            .setCookieSpec(CookieSpecs.BEST_MATCH)
-            .setExpectContinueEnabled(true)
-            .setStaleConnectionCheckEnabled(true)
-            .setTargetPreferredAuthSchemes(Arrays.asList(AuthSchemes.NTLM, AuthSchemes.DIGEST))
-            .setProxyPreferredAuthSchemes(Arrays.asList(AuthSchemes.BASIC))
-            .setSocketTimeout(socketTimeoutTime)
-            .setConnectTimeout(connectTimeoutTime)
-            .setConnectionRequestTimeout(connectionRequestTimeoutTime)
-            .build();
+                .setCookieSpec(CookieSpecs.BEST_MATCH)
+                .setExpectContinueEnabled(true)
+                .setStaleConnectionCheckEnabled(true)
+                .setTargetPreferredAuthSchemes(Arrays.asList(AuthSchemes.NTLM, AuthSchemes.DIGEST))
+                .setProxyPreferredAuthSchemes(Arrays.asList(AuthSchemes.BASIC))
+                .setSocketTimeout(socketTimeoutTime)
+                .setConnectTimeout(connectTimeoutTime)
+                .setConnectionRequestTimeout(connectionRequestTimeoutTime)
+                .build();
 
-        
-      	httpclient = HttpClients.custom()
-                .setConnectionManager(createConnectionManager(socketFactoryRegistry,connFactory,dnsResolver))
+
+        httpclient = HttpClients.custom()
+                .setConnectionManager(createConnectionManager(socketFactoryRegistry, connFactory, dnsResolver))
                 .setDefaultCookieStore(cookieStore)
                 .setDefaultCredentialsProvider(credentialsProvider)
                 .setDefaultRequestConfig(defaultRequestConfig)
                 .build();
-	}
-	
-	private PoolingHttpClientConnectionManager createConnectionManager(Registry<ConnectionSocketFactory> socketFactoryRegistry,
-			HttpConnectionFactory<HttpRoute, ManagedHttpClientConnection> connFactory,
-			DnsResolver dnsResolver) {
-		// Create a connection manager with custom configuration.
+    }
+
+    public static HttpClientUtil getInstance() {
+        return httpClientUtil;
+    }
+
+    public static void main(String[] args) {
+        HttpClientUtil httpClientUtil = getInstance();
+
+        String url = "http://extapi.live.netease.com/api/live/create";
+        String ret = httpClientUtil.execute(url, new BasicNameValuePair("tag", String.valueOf(1389095820)),
+                new BasicNameValuePair("roomId", String.valueOf(100015)));
+        System.out.println(ret);
+
+        url = "http://extapi.live.netease.com/api/live/cancel?tag=1389095820&roomId=100015";
+        ret = httpClientUtil.execute(url);
+        System.out.println(ret);
+
+    }
+
+    private PoolingHttpClientConnectionManager createConnectionManager(Registry<ConnectionSocketFactory> socketFactoryRegistry,
+                                                                       HttpConnectionFactory<HttpRoute, ManagedHttpClientConnection> connFactory,
+                                                                       DnsResolver dnsResolver) {
+        // Create a connection manager with custom configuration.
         PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(
                 socketFactoryRegistry, connFactory, dnsResolver);
 
         // Create socket configuration
         SocketConfig socketConfig = SocketConfig.custom()
-            .setTcpNoDelay(true)
-            .build();
+                .setTcpNoDelay(true)
+                .build();
         // Configure the connection manager to use socket configuration either
         // by default or for a specific host.
         connManager.setDefaultSocketConfig(socketConfig);
 
         // Create message constraints
         MessageConstraints messageConstraints = MessageConstraints.custom()
-            .setMaxHeaderCount(200)
-            .setMaxLineLength(2000)
-            .build();
+                .setMaxHeaderCount(200)
+                .setMaxLineLength(2000)
+                .build();
         // Create connection configuration
         ConnectionConfig connectionConfig = ConnectionConfig.custom()
-            .setMalformedInputAction(CodingErrorAction.IGNORE)
-            .setUnmappableInputAction(CodingErrorAction.IGNORE)
-            .setCharset(Consts.UTF_8)
-            .setMessageConstraints(messageConstraints)
-            .build();
+                .setMalformedInputAction(CodingErrorAction.IGNORE)
+                .setUnmappableInputAction(CodingErrorAction.IGNORE)
+                .setCharset(Consts.UTF_8)
+                .setMessageConstraints(messageConstraints)
+                .build();
         // Configure the connection manager to use connection configuration either
         // by default or for a specific host.
         connManager.setDefaultConnectionConfig(connectionConfig);
@@ -192,145 +210,127 @@ public class HttpClientUtil {
         connManager.setMaxTotal(100);
         connManager.setDefaultMaxPerRoute(10);
         return connManager;
-	}
-	
-	public static HttpClientUtil getInstance() {
-		return httpClientUtil;
-	}
-	
-	public String execute(String url) {
-		String ret = null;
-		HttpGet httpget = new HttpGet(url);
-		// Execution context can be customized locally.
-		HttpClientContext context = HttpClientContext.create();
-     
-		logger.info("executing request " + httpget.getURI());
-		CloseableHttpResponse response = null;
-		try {
-			response = httpclient.execute(httpget, context);
-			HttpEntity entity = response.getEntity();
-			logger.info("StatusLine:" + response.getStatusLine());
-			if (entity != null) {
-				ret = IOUtils.toString(entity.getContent());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		} finally {
-			if(response != null) {
-				try {
-					response.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage());
-				}
-			}
-		}
-		return ret;
-	}
-	
-	public String execute(String url, NameValuePair... params) {
-		String ret = null;
-		HttpPost httppost = new HttpPost(url);
-		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
-		
-		for(NameValuePair param : params) {
-			formparams.add(param);
-		}
-		UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(formparams, Consts.UTF_8);
-		httppost.setEntity(formEntity);
-		// Execution context can be customized locally.
-		HttpClientContext context = HttpClientContext.create();
-     
-		logger.info("executing request " + httppost.getURI());
-		CloseableHttpResponse response = null;
-		try {
-			response = httpclient.execute(httppost, context);
-			HttpEntity entity = response.getEntity();
-			logger.info("StatusLine:" + response.getStatusLine());
-			if (entity != null) {
-				ret = IOUtils.toString(entity.getContent());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		} finally {
-			if(response != null) {
-				try {
-					response.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage());
-				}
-			}
-		}
-		return ret;
-	}
-	
-	public String execute(String url, HttpEntity httpEntity) {
-		String ret = null;
-		HttpPost httppost = new HttpPost(url);
-		httppost.setEntity(httpEntity);
-		logger.info("executing request " + httppost.getURI());
-		CloseableHttpResponse response = null;
-		try {
-			response = httpclient.execute(httppost);
-			HttpEntity entity = response.getEntity();
-			logger.info("StatusLine:" + response.getStatusLine());
-			if (entity != null) {
-				ret = IOUtils.toString(entity.getContent());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		} finally {
-			if(response != null) {
-				try {
-					response.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage());
-				}
-			}
-		}
-		return ret;
-	}
-	
-	public String execute(String url, HttpEntity httpEntity, Header[] headers) {
-		String ret = null;
-		HttpPost httppost = new HttpPost(url);
-		httppost.setEntity(httpEntity);
-		httppost.setHeaders(headers);
-		logger.info("executing request " + httppost.getURI());
-		CloseableHttpResponse response = null;
-		try {
-			response = httpclient.execute(httppost);
-			HttpEntity entity = response.getEntity();
-			logger.info("StatusLine:" + response.getStatusLine());
-			if (entity != null) {
-				ret = IOUtils.toString(entity.getContent());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		} finally {
-			if(response != null) {
-				try {
-					response.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage());
-				}
-			}
-		}
-		return ret;
-	}
-	
-	public static void main(String[] args) {
-		HttpClientUtil httpClientUtil = getInstance();
-		
-		String url = "http://extapi.live.netease.com/api/live/create";
-		String ret = httpClientUtil.execute(url, new BasicNameValuePair("tag", String.valueOf(1389095820)),
-				new BasicNameValuePair("roomId", String.valueOf(100015)));
-		System.out.println(ret);
+    }
 
-		url = "http://extapi.live.netease.com/api/live/cancel?tag=1389095820&roomId=100015";
-		ret = httpClientUtil.execute(url);
-		System.out.println(ret);
-		
-	}
-	
+    public String execute(String url) {
+        String ret = null;
+        HttpGet httpget = new HttpGet(url);
+        // Execution context can be customized locally.
+        HttpClientContext context = HttpClientContext.create();
+
+        logger.info("executing request " + httpget.getURI());
+        CloseableHttpResponse response = null;
+        try {
+            response = httpclient.execute(httpget, context);
+            HttpEntity entity = response.getEntity();
+            logger.info("StatusLine:" + response.getStatusLine());
+            if (entity != null) {
+                ret = IOUtils.toString(entity.getContent());
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+        }
+        return ret;
+    }
+
+    public String execute(String url, NameValuePair... params) {
+        String ret = null;
+        HttpPost httppost = new HttpPost(url);
+        List<NameValuePair> formparams = new ArrayList<NameValuePair>();
+
+        for (NameValuePair param : params) {
+            formparams.add(param);
+        }
+        UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(formparams, Consts.UTF_8);
+        httppost.setEntity(formEntity);
+        // Execution context can be customized locally.
+        HttpClientContext context = HttpClientContext.create();
+
+        logger.info("executing request " + httppost.getURI());
+        CloseableHttpResponse response = null;
+        try {
+            response = httpclient.execute(httppost, context);
+            HttpEntity entity = response.getEntity();
+            logger.info("StatusLine:" + response.getStatusLine());
+            if (entity != null) {
+                ret = IOUtils.toString(entity.getContent());
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+        }
+        return ret;
+    }
+
+    public String execute(String url, HttpEntity httpEntity) {
+        String ret = null;
+        HttpPost httppost = new HttpPost(url);
+        httppost.setEntity(httpEntity);
+        logger.info("executing request " + httppost.getURI());
+        CloseableHttpResponse response = null;
+        try {
+            response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            logger.info("StatusLine:" + response.getStatusLine());
+            if (entity != null) {
+                ret = IOUtils.toString(entity.getContent());
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+        }
+        return ret;
+    }
+
+    public String execute(String url, HttpEntity httpEntity, Header[] headers) {
+        String ret = null;
+        HttpPost httppost = new HttpPost(url);
+        httppost.setEntity(httpEntity);
+        httppost.setHeaders(headers);
+        logger.info("executing request " + httppost.getURI());
+        CloseableHttpResponse response = null;
+        try {
+            response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            logger.info("StatusLine:" + response.getStatusLine());
+            if (entity != null) {
+                ret = IOUtils.toString(entity.getContent());
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+        }
+        return ret;
+    }
+
 
 }

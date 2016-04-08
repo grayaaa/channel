@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class User implements Serializable {
     private static final long serialVersionUID = 7536449367500922853L;
-    private long userId;
+    private long uid;
     private String email;
     private String name;
     private String roles; //拥有的角色列表
@@ -21,7 +21,7 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-                "userId=" + userId +
+                "userId=" + uid +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", roles='" + this.getSetRoles() + '\'' +
@@ -40,13 +40,12 @@ public class User implements Serializable {
         this.proids = proids;
     }
 
-    public long getUserId() {
-
-        return userId;
+    public long getUid() {
+        return uid;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setUid(long uid) {
+        this.uid = uid;
     }
 
     public String getEmail() {

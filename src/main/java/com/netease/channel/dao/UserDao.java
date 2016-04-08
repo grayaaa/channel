@@ -6,8 +6,8 @@ import com.netease.channel.entity.User;
 import java.util.List;
 
 public interface UserDao {
-	
-	public User getUserByEmail(String email);
+
+    public User getUserByEmail(String email);
 
     public List<User> getUserList();
 

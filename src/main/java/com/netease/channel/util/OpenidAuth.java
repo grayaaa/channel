@@ -183,7 +183,7 @@ public class OpenidAuth {
         // BufferedReader br= new BufferedReader(isr);
         // String origin_url = br.readLine();
         String url = URLDecoder.decode(originurl, "UTF-8");
-        LOG.debug("url-->"+url);
+        LOG.debug("url-->" + url);
 
 //        String[] arrays = url.split("&openid");
 //        for (String s : arrays) {
@@ -207,7 +207,7 @@ public class OpenidAuth {
 //            auth_response.put(arrays[i].substring(0, index), arrays[i].substring(index + 1, arrays[i].length()));
 //        }
         auth_response = CRequest.URLRequest(url);
-        LOG.debug("auth_response==>"+auth_response);
+        LOG.debug("auth_response==>" + auth_response);
 
         if (auth_response.get("openid.mode").equals("id_res") == false) {
             // System.out.println("openid.mode 返回值不是 id_res, 认证失败!");
