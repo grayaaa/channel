@@ -1,6 +1,6 @@
 package com.netease.channel.controller;
 
-import com.netease.channel.dao.GroupDao;
+import com.netease.channel.dao.mysql.GroupDao;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;

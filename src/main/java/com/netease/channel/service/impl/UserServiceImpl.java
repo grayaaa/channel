@@ -1,7 +1,7 @@
 package com.netease.channel.service.impl;
 
 import com.google.common.collect.Sets;
-import com.netease.channel.dao.UserDao;
+import com.netease.channel.dao.mysql.UserDao;
 import com.netease.channel.entity.Role;
 import com.netease.channel.entity.User;
 import com.netease.channel.service.UserService;

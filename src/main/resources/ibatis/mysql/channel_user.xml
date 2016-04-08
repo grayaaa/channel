@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.netease.channel.dao.UserDao">
+<mapper namespace="com.netease.channel.dao.mysql.UserDao">
 
     <select id="getUserList" resultType="User" >
         select uid,email,name,roles,proids,cname,ctime,ltime from channel_user ORDER BY uid ASC

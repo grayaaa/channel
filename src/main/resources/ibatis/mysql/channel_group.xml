@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.netease.channel.dao.GroupDao">
+<mapper namespace="com.netease.channel.dao.mysql.GroupDao">
 
 	<select id="getGroupById" resultType="ChannelGroup" parameterType="map">
 		select * from channel_group where id=#{groupId}

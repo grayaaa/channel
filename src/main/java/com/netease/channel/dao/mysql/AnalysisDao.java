@@ -1,4 +1,4 @@
-package com.netease.channel.dao;
+package com.netease.channel.dao.mysql;
 
 import com.netease.channel.entity.ChannelAnalysis;
 
