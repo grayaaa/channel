@@ -83,27 +83,27 @@
     </bean>
     <tx:annotation-driven transaction-manager="txManager"/>
 
-    <!-- pheonix数据源 -->
-    <bean id="pheonixDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-    <property name="jdbcUrl" value="${pheonix.jdbc.jdbcUrl}" />
-    <property name="driverClass" value="${pheonix.jdbc.Driver}" />
-    <property name="maxPoolSize" value="${pheonix.jdbc.maxPoolSize}" />
-    <property name="minPoolSize" value="${pheonix.jdbc.minPoolSize}" />
-    <property name="initialPoolSize" value="${pheonix.jdbc.initialPoolSize}" />
-    <property name="acquireIncrement" value="${pheonix.jdbc.acquireIncrement}" />
-    <property name="maxIdleTime" value="${pheonix.jdbc.maxIdleTime}" />
-    <property name="idleConnectionTestPeriod" value="${pheonix.jdbc.idleConnectionTestPeriod}" />
-    </bean>
-    <bean id="pheonixSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-    <property name="dataSource" ref="pheonixDataSource"/>
-        <property name="configLocation" value="classpath:ibatis/phoenix-mybatis.xml"/>
-        <property name="mapperLocations" value="classpath:ibatis/phoenix/*.xml"/>
-    </bean>
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-    <property name="basePackage" value="com.netease.channel.dao.phoenix" />
-    <!--<property name="annotationClass" value="com.netease.galaxy.annotation.PheonixMapper" />-->
-    <property name="sqlSessionFactoryBeanName" value="pheonixSqlSessionFactory" />
-    </bean>
+    <!--&lt;!&ndash; pheonix数据源 &ndash;&gt;-->
+    <!--<bean id="pheonixDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">-->
+    <!--<property name="jdbcUrl" value="${pheonix.jdbc.jdbcUrl}" />-->
+    <!--<property name="driverClass" value="${pheonix.jdbc.Driver}" />-->
+    <!--<property name="maxPoolSize" value="${pheonix.jdbc.maxPoolSize}" />-->
+    <!--<property name="minPoolSize" value="${pheonix.jdbc.minPoolSize}" />-->
+    <!--<property name="initialPoolSize" value="${pheonix.jdbc.initialPoolSize}" />-->
+    <!--<property name="acquireIncrement" value="${pheonix.jdbc.acquireIncrement}" />-->
+    <!--<property name="maxIdleTime" value="${pheonix.jdbc.maxIdleTime}" />-->
+    <!--<property name="idleConnectionTestPeriod" value="${pheonix.jdbc.idleConnectionTestPeriod}" />-->
+    <!--</bean>-->
+    <!--<bean id="pheonixSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">-->
+    <!--<property name="dataSource" ref="pheonixDataSource"/>-->
+        <!--<property name="configLocation" value="classpath:ibatis/phoenix-mybatis.xml"/>-->
+        <!--<property name="mapperLocations" value="classpath:ibatis/phoenix/*.xml"/>-->
+    <!--</bean>-->
+    <!--<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">-->
+    <!--<property name="basePackage" value="com.netease.channel.dao.phoenix" />-->
+    <!--&lt;!&ndash;<property name="annotationClass" value="com.netease.galaxy.annotation.PheonixMapper" />&ndash;&gt;-->
+    <!--<property name="sqlSessionFactoryBeanName" value="pheonixSqlSessionFactory" />-->
+    <!--</bean>-->
 
 
 

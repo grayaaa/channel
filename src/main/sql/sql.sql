@@ -7,6 +7,7 @@ create table channel_group
 (
    gid             bigint(20) not null auto_increment comment '自增ID',
    gname           varchar(30) not null comment '名称',
+   pid             varchar(16) not null comment '产品id',
    ctime           datetime not null comment '创建时间',
    ltime           datetime not null comment '修改时间',
    type            varchar(30) default NULL comment '类型',
@@ -20,6 +21,7 @@ create table channel_detail
 (
    cid             bigint(20) not null auto_increment comment '自增ID',
    gid             bigint(20) not null comment '所属分组',
+   pid             bigint(16) not null comment '冗余产品id',
    cname           varchar(30) not null comment '名称',
    ctime           datetime not null comment '创建时间',
    ltime           datetime not null comment '修改时间',
@@ -34,7 +36,7 @@ create table channel_finance
 (
    fid             bigint(20) not null auto_increment comment '自增ID',
    gid             bigint(20) not null comment '对应渠道组',
-   ctime           datetime not null comment '创建时间',--月数据,每月产生针对每一个渠道组生成一条数据
+   ctime           datetime not null comment '创建时间,精确到月',--月数据,每月产生针对每一个渠道组生成一条数据
    ltime           datetime not null comment '修改时间',
    settlement      tinyint(1) default NULL comment '结算方式',
    budget          DECIMAL default NULL comment '预算',
@@ -74,7 +76,7 @@ create table channel_role
   primary key (rid)
 );
 insert into channel_role(rid,role,description,permissions,available) values(1,'root','root','*:*',1);
-insert into channel_role(rid,role,description,permissions,available) values(2,'admin','admin','admin:*',1);
+insert into channel_role(rid,role,description,permissions,available) values(2,'admin','admin','admin:*,user:*,role:*',1);
 insert into channel_role(rid,role,description,permissions,available) values(3,'test','test','channel:*',1);
 insert into channel_role(rid,role,description,permissions,available) values(4,'test2','test2','user:*',1);
 
@@ -110,23 +112,23 @@ insert into channel_user (uid,email,name,roles,proids,cname,ctime,ltime) values 
 insert into channel_user (uid,email,name,roles,proids,cname,ctime,ltime) values (10,'qmgeng@corp.netease.com','corp.netease.com','admin','','qmgeng','2016-03-01','2016-03-02');
 update channel_user set roles='root' where email='qmgeng@corp.netease.com';
 
-# drop table if exists channel_user_produce;
-# create table channel_user_produce
-# (
-#   id             bigint(20) not null auto_increment comment '自增ID',
-#   email          varchar(30) not null comment '用户信息',
-#   pid             varchar(16) comment '产品ID',
-#   primary key (id)
-# );
-#
-# drop table if exists channel_user_group;
-# create table channel_user_group
-# (
-#   id             bigint(20) not null auto_increment comment '自增ID',
-#   email          varchar(30) not null comment '用户信息',
-#   gid            bigint(20) not null comment '渠道组',
-#   primary key (id)
-# );
+drop table if exists channel_user_produce;
+create table channel_user_produce
+(
+  id             bigint(20) not null auto_increment comment '自增ID',
+  email          varchar(30) not null comment '用户信息',
+  pid             varchar(16) comment '产品ID',
+  primary key (id)
+);
+
+drop table if exists channel_user_group;
+create table channel_user_group
+(
+  id             bigint(20) not null auto_increment comment '自增ID',
+  email          varchar(30) not null comment '用户信息',
+  gid            bigint(20) not null comment '渠道组',
+  primary key (id)
+);
 
 
 
